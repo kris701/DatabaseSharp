@@ -29,7 +29,7 @@ namespace DatabaseSharp
 		/// <param name="procedureName"></param>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> Execute(string procedureName, List<SQLParam>? parameters = null)
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<SQLParam>? parameters = null)
 		{
 			DataSet dt = new DataSet();
 			using (SqlConnection sqlConn = new SqlConnection(ConnectionString))

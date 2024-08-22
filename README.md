@@ -13,3 +13,17 @@
 
 
 # DatabaseSharp
+
+This is a project to introduce simpler type conversion when communicating with a database.
+
+The library here is designed to only communicate through STPs, since it is considered more secure than free SQL.
+
+An example of how this works can be seen below:
+```csharp
+var client = new DBClient("<--Database Connection String Here-->");
+var result = await client.ExecuteAsync("some-stp");
+
+int someValue = result.GetValue<int>("COL_NAME");
+```
+
+The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).
