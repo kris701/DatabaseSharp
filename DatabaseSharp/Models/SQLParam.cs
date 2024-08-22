@@ -1,13 +1,27 @@
 ﻿namespace DatabaseSharp.Models
 {
+	/// <summary>
+	/// A parameter given to a STP for a SQL database
+	/// </summary>
 	public class SQLParam
 	{
-		public string ParamName { get; set; }
+		/// <summary>
+		/// Name of the parameter
+		/// </summary>
+		public string Name { get; set; }
+		/// <summary>
+		/// Value of the parameter
+		/// </summary>
 		public object Value { get; set; }
 
-		public SQLParam(string paramName, object value)
+		/// <summary>
+		/// Main constructor
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public SQLParam(string name, object value)
 		{
-			ParamName = paramName;
+			Name = name;
 			Value = value;
 		}
 	}
