@@ -71,7 +71,7 @@ namespace DatabaseSharp.Models
 			if (getObj == null)
 				throw new ArgumentNullException("Result from the datatable is null!");
 
-			return (T)Convert.ChangeType(getObj, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
@@ -92,7 +92,7 @@ namespace DatabaseSharp.Models
 			if (getObj == null || DBNull.Value.Equals(getObj))
 				return null;
 			else
-				return (T)Convert.ChangeType(getObj, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+				return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		private object GetObjectValueFromDataTable(string column, int rowID, DataTable table)
