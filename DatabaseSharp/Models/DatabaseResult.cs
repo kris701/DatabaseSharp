@@ -70,6 +70,13 @@ namespace DatabaseSharp.Models
 
 			if (getObj == null)
 				throw new ArgumentNullException("Result from the datatable is null!");
+			if (typeof(T) == typeof(bool))
+			{
+				if (getObj.ToString() == "1")
+					getObj = "true";
+				else
+					getObj = "false";
+			}
 
 			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
@@ -91,8 +98,16 @@ namespace DatabaseSharp.Models
 
 			if (getObj == null || DBNull.Value.Equals(getObj))
 				return null;
-			else
-				return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+
+			if (typeof(T) == typeof(bool))
+			{
+				if (getObj.ToString() == "1")
+					getObj = "true";
+				else
+					getObj = "false";
+			}
+
+			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		private object GetObjectValueFromDataTable(string column, int rowID, DataTable table)
