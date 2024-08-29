@@ -74,7 +74,7 @@ namespace DatabaseSharp.Models
 			{
 				if (getObj.ToString() == "1")
 					getObj = "true";
-				else
+				else if (getObj.ToString() == "0")
 					getObj = "false";
 			}
 
@@ -103,7 +103,7 @@ namespace DatabaseSharp.Models
 			{
 				if (getObj.ToString() == "1")
 					getObj = "true";
-				else
+				else if (getObj.ToString() == "0")
 					getObj = "false";
 			}
 
