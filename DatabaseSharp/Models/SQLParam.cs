@@ -24,5 +24,21 @@
 			Name = name;
 			Value = value;
 		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(Name, Value);
+		}
+
+		public override bool Equals(object? obj)
+		{
+			if (obj is SQLParam other)
+			{
+				if (Name != other.Name) return false;
+				if (Value != other.Value) return false;
+				return true;
+			}
+			return false;
+		}
 	}
 }
