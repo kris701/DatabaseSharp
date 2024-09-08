@@ -7,7 +7,7 @@ namespace DatabaseSharp
 	/// <summary>
 	/// A client to execute STPs from
 	/// </summary>
-	public class DBClient
+	public class DBClient : IDBClient
 	{
 		/// <summary>
 		/// Connection string to the database
