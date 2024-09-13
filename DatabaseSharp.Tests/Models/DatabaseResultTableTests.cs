@@ -4,10 +4,10 @@ using System.Data;
 namespace DatabaseSharp.Tests.Models
 {
 	[TestClass]
-	public class DatabaseResultTests
+	public class DatabaseResultTableTests
 	{
 		[TestMethod]
-		public void Can_IsEmpty()
+		public void Can_GetRowCount()
 		{
 			// ARRANGE
 			var dataset = new DataSet();
@@ -20,14 +20,14 @@ namespace DatabaseSharp.Tests.Models
 			var result = new DatabaseResult(dataset);
 
 			// ACT
-			var empty = result.IsEmpty;
+			var count = result[0].Count;
 
 			// ASSERT
-			Assert.IsFalse(empty);
+			Assert.AreEqual(2, count);
 		}
 
 		[TestMethod]
-		public void Can_Count()
+		public void Can_ContainsColumn()
 		{
 			// ARRANGE
 			var dataset = new DataSet();
@@ -40,56 +40,44 @@ namespace DatabaseSharp.Tests.Models
 			var result = new DatabaseResult(dataset);
 
 			// ACT
-			var count = result.Count;
 
 			// ASSERT
-			Assert.AreEqual(1, count);
+			Assert.IsTrue(result[0].ContainsColumn("col1"));
+			Assert.IsTrue(result[0].ContainsColumn("col2"));
+			Assert.IsFalse(result[0].ContainsColumn("col3"));
+			Assert.IsFalse(result[0].ContainsColumn("col4"));
 		}
 
 		[TestMethod]
-		public void Can_IterateTables()
+		public void Can_IterateRows()
 		{
 			// ARRANGE
 			var dataset = new DataSet();
 			var table1 = new DataTable();
 			table1.Columns.Add(new DataColumn("col1"));
 			table1.Columns.Add(new DataColumn("col2"));
+			table1.Columns.Add(new DataColumn("col3"));
+			table1.Columns.Add(new DataColumn("col4"));
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows.Add(table1.NewRow());
 			table1.Rows.Add(table1.NewRow());
 			table1.Rows.Add(table1.NewRow());
 			dataset.Tables.Add(table1);
-			var table2 = new DataTable();
-			table2.Columns.Add(new DataColumn("col3"));
-			table2.Columns.Add(new DataColumn("col4"));
-			table2.Rows.Add(table2.NewRow());
-			table2.Rows.Add(table2.NewRow());
-			dataset.Tables.Add(table2);
 			var result = new DatabaseResult(dataset);
+			var table = result[0];
 
 			// ACT
 
 			// ASSERT
-			Assert.AreEqual(2, result.Count);
-			Assert.IsTrue(result[0].ContainsColumn("col1"));
-			Assert.IsTrue(result[0].ContainsColumn("col2"));
-			Assert.IsTrue(result[1].ContainsColumn("col3"));
-			Assert.IsTrue(result[1].ContainsColumn("col4"));
-
+			Assert.AreEqual(6, table.Count);
 			var iterated = 0;
-			foreach (var table in result)
+			foreach (var row in table)
 			{
 				iterated++;
-				if (table.ContainsColumn("col1"))
-				{
-					Assert.IsTrue(table.ContainsColumn("col1"));
-					Assert.IsTrue(table.ContainsColumn("col2"));
-				}
-				else
-				{
-					Assert.IsTrue(table.ContainsColumn("col3"));
-					Assert.IsTrue(table.ContainsColumn("col4"));
-				}
 			}
-			Assert.AreEqual(2, iterated);
+			Assert.AreEqual(6, iterated);
 		}
 	}
 }

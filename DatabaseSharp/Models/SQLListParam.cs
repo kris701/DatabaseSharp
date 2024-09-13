@@ -1,11 +1,4 @@
-﻿using Microsoft.SqlServer.Server;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 
 namespace DatabaseSharp.Models
 {
@@ -54,7 +47,7 @@ namespace DatabaseSharp.Models
 				table.Rows.Add(value);
 			return table;
 		}
-		
+
 		public override int GetHashCode()
 		{
 			return HashCode.Combine(Name, Values);

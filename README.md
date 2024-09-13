@@ -21,9 +21,11 @@ The library here is designed to only communicate through STPs, since it is consi
 An example of how this works can be seen below:
 ```csharp
 var client = new DBClient("<--Database Connection String Here-->");
-var result = await client.ExecuteAsync("some-stp");
+var dataset = await client.ExecuteAsync("some-stp");
+var table = dataset[0];
+var row = table[0];
 
-int someValue = result.GetValue<int>("COL_NAME");
+int someValue = row.GetValue<int>("COL_NAME");
 ```
 
 The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).

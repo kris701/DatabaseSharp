@@ -1,20 +1,29 @@
-﻿using System.Data;
+﻿using System.Collections;
+using System.Data;
 
 namespace DatabaseSharp.Models
 {
 	/// <summary>
 	/// Result object from executing a STP
 	/// </summary>
-	public class DatabaseResult
+	public class DatabaseResult : IEnumerable<DatabaseResultTable>
 	{
-		/// <summary>
-		/// Resulting dataset
-		/// </summary>
-		public DataSet DataSet { get; }
+		private readonly DataSet _dataSet;
 		/// <summary>
 		/// A bool indicating if there are no tables in the dataset
 		/// </summary>
-		public bool IsEmpty { get => DataSet.Tables.Count == 0; }
+		public bool IsEmpty { get => _dataSet.Tables.Count == 0; }
+		/// <summary>
+		/// Number of tables in the dataset
+		/// </summary>
+		public int Count => _dataSet.Tables.Count;
+
+		/// <summary>
+		/// Get a table from the dataset
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public DatabaseResultTable this[int index] => new DatabaseResultTable(_dataSet.Tables[index]);
 
 		/// <summary>
 		/// Main constructor
@@ -22,135 +31,45 @@ namespace DatabaseSharp.Models
 		/// <param name="dataSet"></param>
 		public DatabaseResult(DataSet dataSet)
 		{
-			DataSet = dataSet;
+			_dataSet = dataSet;
 		}
 
-		/// <summary>
-		/// Gets the amount of rows that is contained in a table
-		/// </summary>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public int RowCount(int table = 0)
-		{
-			if (DataSet.Tables.Count < table)
-				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
-			return DataSet.Tables[table].Rows.Count;
-		}
+		public IEnumerator<DatabaseResultTable> GetEnumerator() => new DatabaseResultEnumerator(_dataSet);
 
-		/// <summary>
-		/// Boolean check if a given column exists.
-		/// </summary>
-		/// <param name="column"></param>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public bool ContainsColumn(string column, int table = 0)
-		{
-			if (DataSet.Tables.Count < table)
-				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
-			return DataSet.Tables[table].Columns.Contains(column);
-		}
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		/// <summary>
-		/// Converts a value from the datatable to a ordinary type
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="column"></param>
-		/// <param name="rowID"></param>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public T GetValue<T>(string column, int rowID = 0, int table = 0) where T : IConvertible
+		internal class DatabaseResultEnumerator : IEnumerator<DatabaseResultTable>
 		{
-			if (DataSet.Tables.Count < table)
-				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
-			object getObj = GetObjectValueFromDataTable(column, rowID, DataSet.Tables[table]);
+			private readonly DataSet _dataset;
+			private int _index;
 
-			if (getObj == null)
-				throw new ArgumentNullException("Result from the datatable is null!");
-			if (typeof(T) == typeof(bool))
+			public DatabaseResultEnumerator(DataSet dataset)
 			{
-				if (getObj.ToString() == "1")
-					getObj = "true";
-				else if (getObj.ToString() == "0")
-					getObj = "false";
-			}
-			else if (getObj is DateTime dateTime)
-			{
-				if (typeof(T) == typeof(DateTime))
-					return (T)(object)dateTime;
-				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+				_dataset = dataset;
+				_index = -1;
 			}
 
-			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
-		}
+			public DatabaseResultTable Current => new DatabaseResultTable(_dataset.Tables[_index]);
 
-		/// <summary>
-		/// Converts a value from the datatable to a list type
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="column"></param>
-		/// <param name="rowID"></param>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		public T GetListValue<T>(string column, int rowID = 0, int table = 0)
-		{
-			if (DataSet.Tables.Count < table)
-				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
-			object getObj = GetObjectValueFromDataTable(column, rowID, DataSet.Tables[table]);
+			object IEnumerator.Current => new DatabaseResultTable(_dataset.Tables[_index]);
 
-			return (T)Convert.ChangeType(getObj, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
-		}
-
-		/// <summary>
-		/// Converts a value from the datatable to a ordinary type or null
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="column"></param>
-		/// <param name="rowID"></param>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public T? GetValueOrNull<T>(string column, int rowID = 0, int table = 0) where T : struct
-		{
-			if (DataSet.Tables.Count < table)
-				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
-			object getObj = GetObjectValueFromDataTable(column, rowID, DataSet.Tables[table]);
-
-			if (getObj == null || DBNull.Value.Equals(getObj))
-				return null;
-
-			if (typeof(T) == typeof(bool))
+			public void Dispose()
 			{
-				if (getObj.ToString() == "1")
-					getObj = "true";
-				else if (getObj.ToString() == "0")
-					getObj = "false";
-			}
-			else if (getObj is DateTime dateTime)
-			{
-				if (typeof(T) == typeof(DateTime))
-					return (T)(object)dateTime;
-				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+				_dataset.Dispose();
 			}
 
-			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
-		}
-
-		private object GetObjectValueFromDataTable(string column, int rowID, DataTable table)
-		{
-			if (table.Rows.Count > 0)
+			public bool MoveNext()
 			{
-				if (table.Rows[rowID].Table.Columns.Contains(column))
-					return table.Rows[rowID][column];
-				else
-					throw new Exception($"Table contains no column called '{column}'");
+				_index++;
+				if (_index >= _dataset.Tables.Count)
+					return false;
+				return true;
 			}
-			return null;
+
+			public void Reset()
+			{
+				_index = 0;
+			}
 		}
 	}
 }
