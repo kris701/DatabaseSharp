@@ -12,7 +12,7 @@ namespace DatabaseSharp.Models
 	/// <summary>
 	/// A list parameter given to a STP for a SQL database
 	/// </summary>
-	public class SQLListParam : ISQLParameter
+	public class SQLListParam<T> : ISQLParameter
 	{
 		/// <summary>
 		/// Name of the parameter
@@ -21,14 +21,14 @@ namespace DatabaseSharp.Models
 		/// <summary>
 		/// Value of the parameter
 		/// </summary>
-		public List<object> Value { get; set; }
+		public List<T> Value { get; set; }
 
 		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public SQLListParam(string name, List<object> value)
+		public SQLListParam(string name, List<T> value)
 		{
 			Name = name;
 			Value = value;
@@ -37,13 +37,26 @@ namespace DatabaseSharp.Models
 		internal IEnumerable<SqlDataRecord> GenerateParameter()
 		{
 			SqlMetaData[] metaData = new SqlMetaData[1];
-			metaData[0] = new SqlMetaData("Value", SqlDbType.Variant);
+			if (Value.Count > 0)
+				metaData[0] = new SqlMetaData("Value", InferType(Value[0]));
 			SqlDataRecord record = new SqlDataRecord(metaData);
 			foreach (var value in Value)
 			{
 				record.SetValue(0, value);
 				yield return record;
 			}
+		}
+
+		private SqlDbType InferType(T item)
+		{
+			switch (item)
+			{
+				case Guid: return SqlDbType.UniqueIdentifier;
+				case int: return SqlDbType.Int;
+				case float: return SqlDbType.Float;
+				case string: return SqlDbType.VarChar;
+			}
+			return SqlDbType.Variant;
 		}
 
 		public override int GetHashCode()

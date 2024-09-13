@@ -47,7 +47,7 @@ namespace DatabaseSharp
 								case SQLParam p:
 									sqlCmd.Parameters.AddWithValue(s.Name, p.Value);
 									break;
-								case SQLListParam p:
+								case SQLListParam<object> p:
 									var values = p.GenerateParameter();
 									if (values.Count() > 0)
 									{
@@ -57,6 +57,8 @@ namespace DatabaseSharp
 									else
 										sqlCmd.Parameters.AddWithValue(s.Name, null);
 									break;
+								default:
+									throw new Exception("Invalid SQL parameter!");
 							}
 						}
 					}
