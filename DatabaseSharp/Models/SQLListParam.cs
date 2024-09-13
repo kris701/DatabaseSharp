@@ -12,56 +12,52 @@ namespace DatabaseSharp.Models
 	/// <summary>
 	/// A list parameter given to a STP for a SQL database
 	/// </summary>
-	public class SQLListParam<T> : ISQLParameter
+	public class SQLListParam<T> : ISQLParameter, IListHandler
 	{
 		/// <summary>
 		/// Name of the parameter
 		/// </summary>
 		public string Name { get; set; }
 		/// <summary>
+		/// Name of the column to put the data into
+		/// </summary>
+		public string TableColumnName { get; set; }
+		/// <summary>
+		/// Name of the type to send it as
+		/// </summary>
+		public string DatabaseTypeName { get; set; }
+		/// <summary>
 		/// Value of the parameter
 		/// </summary>
-		public List<T> Value { get; set; }
+		public List<T> Values { get; set; }
 
 		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="name"></param>
-		/// <param name="value"></param>
-		public SQLListParam(string name, List<T> value)
+		/// <param name="values"></param>
+		/// <param name="tableColumnName"></param>
+		/// <param name="databaseTypeName"></param>
+		public SQLListParam(string name, List<T> values, string tableColumnName = "", string databaseTypeName = "")
 		{
 			Name = name;
-			Value = value;
+			Values = values;
+			TableColumnName = tableColumnName;
+			DatabaseTypeName = databaseTypeName;
 		}
 
-		internal IEnumerable<SqlDataRecord> GenerateParameter()
+		public DataTable CreateDataTable()
 		{
-			SqlMetaData[] metaData = new SqlMetaData[1];
-			if (Value.Count > 0)
-				metaData[0] = new SqlMetaData("Value", InferType(Value[0]));
-			SqlDataRecord record = new SqlDataRecord(metaData);
-			foreach (var value in Value)
-			{
-				record.SetValue(0, value);
-				yield return record;
-			}
+			DataTable table = new DataTable();
+			table.Columns.Add(TableColumnName, typeof(T));
+			foreach (var value in Values)
+				table.Rows.Add(value);
+			return table;
 		}
-
-		private SqlDbType InferType(T item)
-		{
-			switch (item)
-			{
-				case Guid: return SqlDbType.UniqueIdentifier;
-				case int: return SqlDbType.Int;
-				case float: return SqlDbType.Float;
-				case string: return SqlDbType.VarChar;
-			}
-			return SqlDbType.Variant;
-		}
-
+		
 		public override int GetHashCode()
 		{
-			return HashCode.Combine(Name, Value);
+			return HashCode.Combine(Name, Values);
 		}
 
 		public override bool Equals(object? obj)
@@ -69,7 +65,7 @@ namespace DatabaseSharp.Models
 			if (obj is SQLParam other)
 			{
 				if (Name != other.Name) return false;
-				if (Value != other.Value) return false;
+				if (Values != other.Value) return false;
 				return true;
 			}
 			return false;

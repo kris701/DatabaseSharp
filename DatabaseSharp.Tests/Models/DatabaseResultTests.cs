@@ -137,7 +137,7 @@ namespace DatabaseSharp.Tests.Models
 		}
 
 		[TestMethod]
-		public void Can_GetListValue()
+		public async Task Can_GetListValue()
 		{
 			// ARRANGE
 			var dataset = new DataSet();
