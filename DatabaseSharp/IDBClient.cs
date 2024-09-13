@@ -18,6 +18,6 @@ namespace DatabaseSharp
 		/// <param name="procedureName"></param>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		public Task<DatabaseResult> ExecuteAsync(string procedureName, List<SQLParam>? parameters = null);
+		public Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null);
 	}
 }

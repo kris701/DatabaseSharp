@@ -137,14 +137,16 @@ namespace DatabaseSharp.Tests.Models
 		}
 
 		[TestMethod]
-		public void Can_GetStructuredValue_List()
+		public void Can_GetListValue()
 		{
 			// ARRANGE
 			var dataset = new DataSet();
 			var table = new DataTable();
 			table.Columns.Add(new DataColumn("col1", typeof(List<string>)));
+			table.Columns.Add(new DataColumn("col2", typeof(List<Guid>)));
 			table.Rows.Add(table.NewRow());
 			table.Rows[0].SetField(table.Columns[0], new List<string>() { "a", "b" });
+			table.Rows[0].SetField(table.Columns[1], new List<Guid>() { new Guid("3e3e6081-2274-4a7a-89c1-e78247f66f5d"), new Guid("df145930-c989-4f7a-86c0-ca08be6e45aa") });
 			table.Rows.Add(table.NewRow());
 			dataset.Tables.Add(table);
 			var result = new DatabaseResult(dataset);
@@ -152,36 +154,12 @@ namespace DatabaseSharp.Tests.Models
 			// ACT
 
 			// ASSERT
-			var str = result.GetStructuredValue<List<string>>("col1");
+			var str = result.GetListValue<List<string>>("col1");
 			Assert.IsTrue(str.Contains("a"));
 			Assert.IsTrue(str.Contains("b"));
-		}
-
-		[TestMethod]
-		public void Can_GetStructuredValue_Type()
-		{
-			// ARRANGE
-			var dataset = new DataSet();
-			var table = new DataTable();
-			table.Columns.Add(new DataColumn("col1", typeof(TestClass)));
-			table.Rows.Add(table.NewRow());
-			table.Rows[0].SetField(table.Columns[0], new TestClass() { Id = 1241, Name = "asb" });
-			table.Rows.Add(table.NewRow());
-			dataset.Tables.Add(table);
-			var result = new DatabaseResult(dataset);
-
-			// ACT
-
-			// ASSERT
-			var str = result.GetStructuredValue<TestClass>("col1");
-			Assert.AreEqual(1241, str.Id);
-			Assert.AreEqual("asb", str.Name);
-		}
-
-		private class TestClass
-		{
-			public int Id { get; set; }
-			public string Name { get; set; }
+			var str2 = result.GetListValue<List<Guid>>("col2");
+			Assert.IsTrue(str2.Contains(new Guid("3e3e6081-2274-4a7a-89c1-e78247f66f5d")));
+			Assert.IsTrue(str2.Contains(new Guid("df145930-c989-4f7a-86c0-ca08be6e45aa")));
 		}
 	}
 }

@@ -30,7 +30,7 @@ namespace DatabaseSharp
 		/// <param name="procedureName"></param>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<SQLParam>? parameters = null)
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
 			using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
@@ -40,11 +40,18 @@ namespace DatabaseSharp
 					sqlCmd.CommandType = CommandType.StoredProcedure;
 					if (parameters != null)
 					{
-						foreach (SQLParam s in parameters)
+						foreach (ISQLParameter s in parameters)
 						{
-							var added = sqlCmd.Parameters.AddWithValue(s.Name, s.Value);
-							if (s.IsStructured)
-								added.SqlDbType = SqlDbType.Structured;
+							switch (s)
+							{
+								case SQLParam p:
+									sqlCmd.Parameters.AddWithValue(s.Name, p.Value);
+									break;
+								case SQLListParam p:
+									var added = sqlCmd.Parameters.AddWithValue(s.Name, p.GenerateParameter());
+									added.SqlDbType = SqlDbType.Structured;
+									break;
+							}
 						}
 					}
 					await sqlConn.OpenAsync();

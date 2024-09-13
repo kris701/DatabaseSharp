@@ -3,7 +3,7 @@
 	/// <summary>
 	/// A parameter given to a STP for a SQL database
 	/// </summary>
-	public class SQLParam
+	public class SQLParam : ISQLParameter
 	{
 		/// <summary>
 		/// Name of the parameter
@@ -13,11 +13,6 @@
 		/// Value of the parameter
 		/// </summary>
 		public object Value { get; set; }
-
-		/// <summary>
-		/// Optional bool, to say if a parameter should be treated as a type
-		/// </summary>
-		public bool IsStructured { get; set; } = false;
 
 		/// <summary>
 		/// Main constructor

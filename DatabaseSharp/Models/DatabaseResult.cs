@@ -88,7 +88,7 @@ namespace DatabaseSharp.Models
 		}
 
 		/// <summary>
-		/// Converts a value from the datatable to a structured type
+		/// Converts a value from the datatable to a list type
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="column"></param>
@@ -97,7 +97,7 @@ namespace DatabaseSharp.Models
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public T GetStructuredValue<T>(string column, int rowID = 0, int table = 0)
+		public T GetListValue<T>(string column, int rowID = 0, int table = 0)
 		{
 			if (DataSet.Tables.Count < table)
 				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
