@@ -15,6 +15,11 @@
 		public object Value { get; set; }
 
 		/// <summary>
+		/// Optional bool, to say if a parameter should be treated as a type
+		/// </summary>
+		public bool IsStructured { get; set; } = false;
+
+		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="name"></param>

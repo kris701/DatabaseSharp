@@ -39,8 +39,14 @@ namespace DatabaseSharp
 				{
 					sqlCmd.CommandType = CommandType.StoredProcedure;
 					if (parameters != null)
+					{
 						foreach (SQLParam s in parameters)
-							sqlCmd.Parameters.AddWithValue(s.Name, s.Value);
+						{
+							var added = sqlCmd.Parameters.AddWithValue(s.Name, s.Value);
+							if (s.IsStructured)
+								added.SqlDbType = SqlDbType.Structured;
+						}
+					}
 					await sqlConn.OpenAsync();
 					using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(sqlCmd))
 					{
