@@ -1,4 +1,5 @@
 ﻿using DatabaseSharp.Models;
+using DatabaseSharp.Tests.TestModels;
 using System.Data;
 using System.Security.Cryptography.X509Certificates;
 
@@ -106,17 +107,6 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual("abc", filled.Name);
 			Assert.AreEqual(123, filled.SomeValue);
 			Assert.AreEqual(tstID, filled.ID);
-		}
-
-		public class TestClass
-		{
-			public string Name { get; set; } = "";
-
-			[DatabaseSharp(ColumnName = "col2")]
-			public int SomeValue { get; set; } = 0;
-
-			[DatabaseSharp(ColumnName = "col3")]
-			public Guid ID { get; set; } = Guid.Empty;
 		}
 	}
 }

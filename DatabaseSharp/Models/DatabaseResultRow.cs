@@ -17,8 +17,7 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T Fill<T>() 
-			where T : class, new()
+		public T Fill<T>() where T : class, new()
 		{
 			var instance = new T();
 			if (instance == null)
@@ -40,15 +39,15 @@ namespace DatabaseSharp.Models
 		/// Converts a value from the datatable to a ordinary type
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="column"></param>
+		/// <param name="columnName"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public T GetValue<T>(string column) where T : IConvertible => GetValue(column, typeof(T));
+		public T GetValue<T>(string columnName) where T : IConvertible => GetValue(columnName, typeof(T));
 
-		private dynamic GetValue(string column, Type type)
+		private dynamic GetValue(string columnName, Type type)
 		{
-			object getObj = GetObjectValueFromDataTable(column);
+			object getObj = GetObjectValueFromDataTable(columnName);
 
 			if (getObj == null)
 				throw new ArgumentNullException("Result from the datatable is null!");
@@ -73,12 +72,12 @@ namespace DatabaseSharp.Models
 		/// Converts a value from the datatable to a ordinary type or null
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="column"></param>
+		/// <param name="columnName"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public T? GetValueOrNull<T>(string column) where T : struct
+		public T? GetValueOrNull<T>(string columnName) where T : struct
 		{
-			object getObj = GetObjectValueFromDataTable(column);
+			object getObj = GetObjectValueFromDataTable(columnName);
 
 			if (getObj == null || DBNull.Value.Equals(getObj))
 				return null;
@@ -100,11 +99,11 @@ namespace DatabaseSharp.Models
 			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
 
-		private object GetObjectValueFromDataTable(string column)
+		private object GetObjectValueFromDataTable(string columnName)
 		{
-			if (!_row.Table.Columns.Contains(column))
-				throw new Exception($"Table contains no column called '{column}'");
-			return _row[column];
+			if (!_row.Table.Columns.Contains(columnName))
+				throw new Exception($"Table contains no column called '{columnName}'");
+			return _row[columnName];
 		}
 	}
 }

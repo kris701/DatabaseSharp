@@ -46,4 +46,14 @@ var row = table[0];
 SomeClass filled = row.Fill<SomeClass>();
 ```
 
+These are just the methods on the row level. 
+However you can also use these on the Table level, where it will instead make a list of the items, as such:
+```csharp
+var client = new DBClient("<--Database Connection String Here-->");
+var dataset = await client.ExecuteAsync("some-stp");
+var table = dataset[0];
+
+List<int> someValue = table.GetAllValues<int>("COL_NAME");
+```
+
 The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).

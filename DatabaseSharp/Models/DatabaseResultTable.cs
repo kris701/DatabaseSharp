@@ -41,6 +41,47 @@ namespace DatabaseSharp.Models
 			return _table.Columns.Contains(column);
 		}
 
+		/// <summary>
+		/// Create a list of all the rows in the table
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public List<T> FillAll<T>() where T : class, new()
+		{
+			var result = new List<T>();
+			foreach (var row in this)
+				result.Add(row.Fill<T>());
+			return result;
+		}
+
+		/// <summary>
+		/// Get a column value across all rows in the table
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="columnName"></param>
+		/// <returns></returns>
+		public List<T> GetAllValues<T>(string columnName) where T : IConvertible
+		{
+			var result = new List<T>();
+			foreach (var row in this)
+				result.Add(row.GetValue<T>(columnName));
+			return result;
+		}
+
+		/// <summary>
+		/// Get a value (or null) across all rows in the table
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="columnName"></param>
+		/// <returns></returns>
+		public List<T?> GetAllValuesOrNull<T>(string columnName) where T : struct
+		{
+			var result = new List<T?>();
+			foreach (var row in this)
+				result.Add(row.GetValueOrNull<T>(columnName));
+			return result;
+		}
+
 		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
