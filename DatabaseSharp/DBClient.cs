@@ -48,8 +48,14 @@ namespace DatabaseSharp
 									sqlCmd.Parameters.AddWithValue(s.Name, p.Value);
 									break;
 								case SQLListParam p:
-									var added = sqlCmd.Parameters.AddWithValue(s.Name, p.GenerateParameter());
-									added.SqlDbType = SqlDbType.Structured;
+									var values = p.GenerateParameter();
+									if (values.Count() > 0)
+									{
+										var added = sqlCmd.Parameters.AddWithValue(s.Name, p.GenerateParameter());
+										added.SqlDbType = SqlDbType.Structured;
+									}
+									else
+										sqlCmd.Parameters.AddWithValue(s.Name, null);
 									break;
 							}
 						}

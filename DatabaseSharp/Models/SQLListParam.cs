@@ -36,7 +36,8 @@ namespace DatabaseSharp.Models
 
 		internal IEnumerable<SqlDataRecord> GenerateParameter()
 		{
-			SqlMetaData[] metaData = new SqlMetaData[0];
+			SqlMetaData[] metaData = new SqlMetaData[1];
+			metaData[0] = new SqlMetaData("Value", SqlDbType.Variant);
 			SqlDataRecord record = new SqlDataRecord(metaData);
 			foreach (var value in Value)
 			{
