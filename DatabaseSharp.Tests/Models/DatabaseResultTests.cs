@@ -135,5 +135,53 @@ namespace DatabaseSharp.Tests.Models
 			Assert.IsNull(result.GetValueOrNull<DateTime>("col3"));
 			Assert.AreEqual(4.2, result.GetValueOrNull<double>("col4"));
 		}
+
+		[TestMethod]
+		public void Can_GetStructuredValue_List()
+		{
+			// ARRANGE
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("col1", typeof(List<string>)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField(table.Columns[0], new List<string>() { "a", "b" });
+			table.Rows.Add(table.NewRow());
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+
+			// ASSERT
+			var str = result.GetStructuredValue<List<string>>("col1");
+			Assert.IsTrue(str.Contains("a"));
+			Assert.IsTrue(str.Contains("b"));
+		}
+
+		[TestMethod]
+		public void Can_GetStructuredValue_Type()
+		{
+			// ARRANGE
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("col1", typeof(TestClass)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField(table.Columns[0], new TestClass() { Id = 1241, Name = "asb" });
+			table.Rows.Add(table.NewRow());
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+
+			// ASSERT
+			var str = result.GetStructuredValue<TestClass>("col1");
+			Assert.AreEqual(1241, str.Id);
+			Assert.AreEqual("asb", str.Name);
+		}
+
+		private class TestClass
+		{
+			public int Id { get; set; }
+			public string Name { get; set; }
+		}
 	}
 }

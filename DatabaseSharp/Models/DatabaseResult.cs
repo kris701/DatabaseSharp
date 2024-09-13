@@ -88,6 +88,25 @@ namespace DatabaseSharp.Models
 		}
 
 		/// <summary>
+		/// Converts a value from the datatable to a structured type
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="column"></param>
+		/// <param name="rowID"></param>
+		/// <param name="table"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		public T GetStructuredValue<T>(string column, int rowID = 0, int table = 0)
+		{
+			if (DataSet.Tables.Count < table)
+				throw new ArgumentOutOfRangeException($"Dataset only has {DataSet.Tables.Count} tables, but index '{table}' was requested!");
+			object getObj = GetObjectValueFromDataTable(column, rowID, DataSet.Tables[table]);
+
+			return (T)Convert.ChangeType(getObj, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>
 		/// Converts a value from the datatable to a ordinary type or null
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
