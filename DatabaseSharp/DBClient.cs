@@ -108,7 +108,7 @@ namespace DatabaseSharp
 				}
 			}
 
-            return await ExecuteAsync(procedureName, parameters);
+			return await ExecuteAsync(procedureName, parameters);
 		}
 	}
 }

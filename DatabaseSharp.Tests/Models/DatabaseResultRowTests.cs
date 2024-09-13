@@ -1,7 +1,6 @@
 ﻿using DatabaseSharp.Models;
 using DatabaseSharp.Tests.TestModels;
 using System.Data;
-using System.Security.Cryptography.X509Certificates;
 
 namespace DatabaseSharp.Tests.Models
 {

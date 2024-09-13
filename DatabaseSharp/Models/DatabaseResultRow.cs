@@ -24,7 +24,7 @@ namespace DatabaseSharp.Models
 				throw new Exception("Could not create an empty instance of the class!");
 
 			var props = instance.GetType().GetProperties();
-			foreach(var prop in props)
+			foreach (var prop in props)
 			{
 				var columnName = prop.Name;
 				if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
@@ -61,7 +61,7 @@ namespace DatabaseSharp.Models
 			else if (getObj is DateTime dateTime)
 			{
 				if (type == typeof(DateTime))
-					return (object)dateTime;
+					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
 
