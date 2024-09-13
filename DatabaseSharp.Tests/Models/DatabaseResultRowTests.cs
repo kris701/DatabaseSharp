@@ -1,5 +1,6 @@
 ﻿using DatabaseSharp.Models;
 using System.Data;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DatabaseSharp.Tests.Models
 {
@@ -76,6 +77,46 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual(123, row.GetValueOrNull<int>("col2"));
 			Assert.IsNull(row.GetValueOrNull<DateTime>("col3"));
 			Assert.AreEqual(4.2, row.GetValueOrNull<double>("col4"));
+		}
+
+		[TestMethod]
+		public void Can_Fill()
+		{
+			// ARRANGE
+			var tstID = Guid.NewGuid();
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("Name", typeof(string)));
+			table.Columns.Add(new DataColumn("col2", typeof(int)));
+			table.Columns.Add(new DataColumn("col3", typeof(Guid)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField(table.Columns[0], "abc");
+			table.Rows[0].SetField(table.Columns[1], 123);
+			table.Rows[0].SetField(table.Columns[2], tstID);
+			table.Rows.Add(table.NewRow());
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+
+			// ASSERT
+			var row = result[0][0];
+			var filled = row.Fill<TestClass>();
+			Assert.IsNotNull(filled);
+			Assert.AreEqual("abc", filled.Name);
+			Assert.AreEqual(123, filled.SomeValue);
+			Assert.AreEqual(tstID, filled.ID);
+		}
+
+		public class TestClass
+		{
+			public string Name { get; set; } = "";
+
+			[DatabaseSharp(ColumnName = "col2")]
+			public int SomeValue { get; set; } = 0;
+
+			[DatabaseSharp(ColumnName = "col3")]
+			public Guid ID { get; set; } = Guid.Empty;
 		}
 	}
 }

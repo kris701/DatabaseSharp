@@ -14,5 +14,13 @@ namespace DatabaseSharp
 		/// <param name="parameters"></param>
 		/// <returns></returns>
 		public Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null);
+
+		/// <summary>
+		/// Execute a STP with a object that will be turned into parameters
+		/// </summary>
+		/// <param name="procedureName"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public Task<DatabaseResult> ExecuteAsync(string procedureName, object? item = null);
 	}
 }

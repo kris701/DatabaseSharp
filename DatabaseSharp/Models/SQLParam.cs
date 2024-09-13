@@ -12,14 +12,14 @@
 		/// <summary>
 		/// Value of the parameter
 		/// </summary>
-		public object Value { get; set; }
+		public object? Value { get; set; }
 
 		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
-		public SQLParam(string name, object value)
+		public SQLParam(string name, object? value)
 		{
 			Name = name;
 			Value = value;

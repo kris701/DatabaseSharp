@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Reflection;
 
 namespace DatabaseSharp
 {
@@ -75,5 +76,39 @@ namespace DatabaseSharp
 			return new DatabaseResult(dt);
 		}
 
+		/// <summary>
+		/// Execute a STP with a object that will be turned into parameters
+		/// </summary>
+		/// <param name="procedureName"></param>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object? item = null)
+		{
+			var parameters = new List<ISQLParameter>();
+			if (item != null)
+			{
+				var props = item.GetType().GetProperties();
+				foreach (var prop in props)
+				{
+					var typeName = "";
+					var columnName = "";
+					var parameterName = prop.Name;
+					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
+					{
+						parameterName = overrideName.ColumnName;
+						typeName = overrideName.TypeName;
+						columnName = overrideName.ColumnName;
+					}
+					var value = prop.GetValue(item);
+
+					if (value is List<dynamic> lst)
+						parameters.Add(new SQLListParam<dynamic>(parameterName, lst, columnName, typeName));
+					else
+						parameters.Add(new SQLParam(parameterName, value));
+				}
+			}
+
+            return await ExecuteAsync(procedureName, parameters);
+		}
 	}
 }

@@ -28,4 +28,22 @@ var row = table[0];
 int someValue = row.GetValue<int>("COL_NAME");
 ```
 
+You can also deserialize directly into class objects like this:
+```csharp
+public class SomeClass
+{
+    [DatabaseSharp(ColumnName = "PK_NAME")]
+    public string Name { get; set; }
+    [DatabaseSharp(ColumnName = "ACT_VALUE")]
+    public int Value { get; set; }
+}
+
+var client = new DBClient("<--Database Connection String Here-->");
+var dataset = await client.ExecuteAsync("some-stp");
+var table = dataset[0];
+var row = table[0];
+
+SomeClass filled = row.Fill<SomeClass>();
+```
+
 The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).
