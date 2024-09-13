@@ -1,6 +1,7 @@
 ﻿using DatabaseSharp.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace DatabaseSharp
 {
@@ -31,7 +32,7 @@ namespace DatabaseSharp
 		/// <returns></returns>
 		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<SQLParam>? parameters = null)
 		{
-			DataSet dt = new DataSet();
+			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
 			using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
 			{
 				using (SqlCommand sqlCmd = new SqlCommand(procedureName, sqlConn))

@@ -80,6 +80,7 @@ namespace DatabaseSharp.Tests.Models
 			table.Columns.Add(new DataColumn("col6", typeof(int)));
 			table.Columns.Add(new DataColumn("col7", typeof(bool)));
 			table.Columns.Add(new DataColumn("col8", typeof(bool)));
+			table.Columns.Add(new DataColumn("col9", typeof(DateTime)));
 			table.Rows.Add(table.NewRow());
 			table.Rows[0].SetField(table.Columns[0], "abc");
 			table.Rows[0].SetField(table.Columns[1], 123);
@@ -89,6 +90,7 @@ namespace DatabaseSharp.Tests.Models
 			table.Rows[0].SetField(table.Columns[5], 1);
 			table.Rows[0].SetField(table.Columns[6], false);
 			table.Rows[0].SetField(table.Columns[7], true);
+			table.Rows[0].SetField(table.Columns[8], DateTime.Parse("2024-09-13 05:48:41.237"));
 			table.Rows.Add(table.NewRow());
 			dataset.Tables.Add(table);
 			var result = new DatabaseResult(dataset);
@@ -104,6 +106,7 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual(true, result.GetValue<bool>("col6"));
 			Assert.AreEqual(false, result.GetValue<bool>("col7"));
 			Assert.AreEqual(true, result.GetValue<bool>("col8"));
+			Assert.AreEqual(DateTime.Parse("2024-09-13 05:48:41.237"), result.GetValue<DateTime>("col9"));
 		}
 
 		[TestMethod]

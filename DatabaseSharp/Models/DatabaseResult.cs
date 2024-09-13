@@ -77,6 +77,12 @@ namespace DatabaseSharp.Models
 				else if (getObj.ToString() == "0")
 					getObj = "false";
 			}
+			else if (getObj is DateTime dateTime)
+			{
+				if (typeof(T) == typeof(DateTime))
+					return (T)(object)dateTime;
+				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
+			}
 
 			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
@@ -105,6 +111,12 @@ namespace DatabaseSharp.Models
 					getObj = "true";
 				else if (getObj.ToString() == "0")
 					getObj = "false";
+			}
+			else if (getObj is DateTime dateTime)
+			{
+				if (typeof(T) == typeof(DateTime))
+					return (T)(object)dateTime;
+				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
 
 			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
