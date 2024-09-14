@@ -22,9 +22,10 @@ namespace DatabaseSharp.Tests
 
             // ASSERT
             Assert.IsNotNull(parameters);
-            Assert.AreEqual(2, parameters.Count);
+            Assert.AreEqual(3, parameters.Count);
             Assert.IsTrue(parameters.Any(x => x.Name == "SomeParam"));
             Assert.IsTrue(parameters.Any(x => x.Name == "SomeOtherParam"));
+            Assert.IsTrue(parameters.Any(x => x.Name == "Guids"));
 		}
 	}
 }

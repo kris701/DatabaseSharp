@@ -1,11 +1,12 @@
-﻿using System.Data;
+﻿using System.Collections;
+using System.Data;
 
 namespace DatabaseSharp.Models
 {
 	/// <summary>
 	/// A list parameter given to a STP for a SQL database
 	/// </summary>
-	public class SQLListParam<T> : ISQLParameter, IListHandler
+	public class SQLListParam : ISQLParameter, IListHandler
 	{
 		/// <summary>
 		/// Name of the parameter
@@ -22,7 +23,7 @@ namespace DatabaseSharp.Models
 		/// <summary>
 		/// Value of the parameter
 		/// </summary>
-		public List<T> Values { get; set; }
+		public IList Values { get; set; }
 
 		/// <summary>
 		/// Main constructor
@@ -31,7 +32,7 @@ namespace DatabaseSharp.Models
 		/// <param name="values"></param>
 		/// <param name="tableColumnName"></param>
 		/// <param name="databaseTypeName"></param>
-		public SQLListParam(string name, List<T> values, string tableColumnName = "", string databaseTypeName = "")
+		public SQLListParam(string name, IList values, string tableColumnName = "", string databaseTypeName = "")
 		{
 			Name = name;
 			Values = values;
@@ -46,7 +47,9 @@ namespace DatabaseSharp.Models
 		public DataTable CreateDataTable()
 		{
 			DataTable table = new DataTable();
-			table.Columns.Add(TableColumnName, typeof(T));
+			if (Values.Count == 0)
+				return table;
+			table.Columns.Add(TableColumnName, Values[0].GetType());
 			foreach (var value in Values)
 				table.Rows.Add(value);
 			return table;

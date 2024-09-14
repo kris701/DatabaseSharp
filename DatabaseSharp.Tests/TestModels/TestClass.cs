@@ -15,5 +15,8 @@ namespace DatabaseSharp.Tests.TestModels
 
 		[DatabaseSharpIgnore]
 		public Guid MoreIDs { get; set; } = Guid.Empty;
+
+		[DatabaseSharpIgnore(IgnoreAsParameter = false)]
+		public List<Guid> Guids { get; set; } = new List<Guid>();
 	}
 }

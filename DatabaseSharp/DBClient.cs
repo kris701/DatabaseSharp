@@ -1,5 +1,6 @@
 ﻿using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
+using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -132,12 +133,13 @@ namespace DatabaseSharp
 						}
 					}
 
-					if (value is List<dynamic> lst)
-						parameters.Add(new SQLListParam<dynamic>(parameterName, lst, columnName, typeName));
+					if (value is IList lst)
+						parameters.Add(new SQLListParam(parameterName, lst, columnName, typeName));
 					else
 						parameters.Add(new SQLParam(parameterName, value));
 				}
 			}
+
 			if (parameters.Count == 0)
 				return null;
 			return parameters;
