@@ -21,7 +21,7 @@ namespace DatabaseSharp
 		/// <param name="procedureName"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public Task<DatabaseResult> ExecuteAsync(string procedureName, object? item = null);
+		public Task<DatabaseResult> ExecuteAsync(string procedureName, object item);
 
 		/// <summary>
 		/// Automatically generate STP parameters based on a given object

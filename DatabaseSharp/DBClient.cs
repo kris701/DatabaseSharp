@@ -82,14 +82,7 @@ namespace DatabaseSharp
 		/// <param name="procedureName"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object? item = null)
-		{
-			var parameters = new List<ISQLParameter>();
-			if (item != null)
-				parameters = GenerateParametersFromObject(item);
-
-			return await ExecuteAsync(procedureName, parameters);
-		}
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item) => await ExecuteAsync(procedureName, GenerateParametersFromObject(item));
 
 		/// <summary>
 		/// Automatically generate STP parameters based on a given object
