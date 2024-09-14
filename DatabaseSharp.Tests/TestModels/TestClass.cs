@@ -11,7 +11,7 @@ namespace DatabaseSharp.Tests.TestModels
 		public int SomeValue { get; set; } = 12354;
 
 		[DatabaseSharp(ColumnName = "col3", ParameterName = "SomeOtherParam")]
-		public Guid ID { get; set; } = new Guid("bf737802-4b09-4525-90ec-af77dd297e35");
+		public Guid? ID { get; set; } = new Guid("bf737802-4b09-4525-90ec-af77dd297e35");
 
 		[DatabaseSharpIgnore]
 		public Guid MoreIDs { get; set; } = Guid.Empty;

@@ -51,7 +51,11 @@ namespace DatabaseSharp.Models
 						continue;
 					}
 				}
-				prop.SetValue(instance, GetValue(columnName, prop.PropertyType));
+				var underlying = Nullable.GetUnderlyingType(prop.PropertyType);
+				if (underlying != null)
+					prop.SetValue(instance, GetValueOrNull(columnName, underlying));
+				else
+					prop.SetValue(instance, GetValue(columnName, prop.PropertyType));
 			}
 
 			return instance;
@@ -99,14 +103,16 @@ namespace DatabaseSharp.Models
 		/// <param name="columnName"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public T? GetValueOrNull<T>(string columnName) where T : struct
+		public T? GetValueOrNull<T>(string columnName) where T : struct => GetValueOrNull(columnName, typeof(T));
+
+		private dynamic? GetValueOrNull(string columnName, Type type)
 		{
 			object getObj = GetObjectValueFromDataTable(columnName);
 
 			if (getObj == null || DBNull.Value.Equals(getObj))
 				return null;
 
-			if (typeof(T) == typeof(bool))
+			if (type == typeof(bool))
 			{
 				if (getObj.ToString() == "1")
 					getObj = "true";
@@ -115,14 +121,14 @@ namespace DatabaseSharp.Models
 			}
 			else if (getObj is DateTime dateTime)
 			{
-				if (typeof(T) == typeof(DateTime))
-					return (T)(object)dateTime;
+				if (type == typeof(DateTime))
+					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
-			else if (typeof(T) == typeof(Guid))
-				return (T)Convert.ChangeType(getObj, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+			else if (type == typeof(Guid))
+				return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
 
-			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
+			return Convert.ChangeType(getObj.ToString(), type, System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		private object GetObjectValueFromDataTable(string columnName)
