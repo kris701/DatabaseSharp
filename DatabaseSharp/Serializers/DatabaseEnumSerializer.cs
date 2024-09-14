@@ -15,6 +15,6 @@ namespace DatabaseSharp.Serializers
 		public const string SerializerName = "ENUM";
 
 		public dynamic Deserialise(string text, Type asType) => Enum.Parse(asType, text);
-		public string Serialize(dynamic item) => $"{(int)item}";
+		public string Serialize(dynamic item, Type asType) => $"{(int)item}";
 	}
 }

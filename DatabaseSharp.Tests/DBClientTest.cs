@@ -26,5 +26,5 @@ namespace DatabaseSharp.Tests
             Assert.IsTrue(parameters.Any(x => x.Name == "SomeParam"));
             Assert.IsTrue(parameters.Any(x => x.Name == "SomeOtherParam"));
 		}
-    }
+	}
 }

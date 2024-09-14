@@ -128,7 +128,7 @@ namespace DatabaseSharp
 						if (overrideName.Serializer != null)
 						{
 							var serializer = Serializers[overrideName.Serializer];
-							value = serializer.Serialize(value);
+							value = serializer.Serialize(value, prop.PropertyType);
 						}
 					}
 

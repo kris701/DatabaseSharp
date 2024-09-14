@@ -19,11 +19,14 @@ namespace DatabaseSharp.Tests.Serializers
 			// ARRANGE
 			var client = new DBClient("");
 			var expected = JsonSerializer.Serialize(new TestClass());
+			var expected2 = JsonSerializer.Serialize(new TestClass3(), typeof(ITestInterface));
 			var dataset = new DataSet();
 			var table = new DataTable();
 			table.Columns.Add(new DataColumn("col1", typeof(string)));
+			table.Columns.Add(new DataColumn("col2", typeof(string)));
 			table.Rows.Add(table.NewRow());
 			table.Rows[0].SetField(table.Columns[0], expected);
+			table.Rows[0].SetField(table.Columns[1], expected2);
 			dataset.Tables.Add(table);
 			var result = new DatabaseResult(dataset, client.Serializers);
 
@@ -34,6 +37,7 @@ namespace DatabaseSharp.Tests.Serializers
 			var model = row.Fill<TestClass2>();
 
 			Assert.AreEqual(expected, JsonSerializer.Serialize(model.Test));
+			Assert.AreEqual(expected2, JsonSerializer.Serialize(model.Test2));
 		}
 	}
 }
