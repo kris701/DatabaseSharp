@@ -31,7 +31,8 @@ namespace DatabaseSharp
 			ConnectionString = connectionString;
 			Serializers = new Dictionary<string, IDatabaseSerializer>()
 			{
-				{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() }
+				{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() },
+				{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() },
 			};
 		}
 
