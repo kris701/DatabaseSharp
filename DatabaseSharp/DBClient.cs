@@ -1,4 +1,5 @@
 ﻿using DatabaseSharp.Models;
+using DatabaseSharp.Serializers;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -17,12 +18,21 @@ namespace DatabaseSharp
 		public string ConnectionString { get; set; }
 
 		/// <summary>
+		/// Set of optional property serializers
+		/// </summary>
+		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
+
+		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="connectionString"></param>
 		public DBClient(string connectionString)
 		{
 			ConnectionString = connectionString;
+			Serializers = new Dictionary<string, IDatabaseSerializer>()
+			{
+				{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() }
+			};
 		}
 
 		/// <summary>
@@ -73,7 +83,7 @@ namespace DatabaseSharp
 					}
 				}
 			}
-			return new DatabaseResult(dt);
+			return new DatabaseResult(dt, Serializers);
 		}
 
 		/// <summary>
@@ -101,16 +111,25 @@ namespace DatabaseSharp
 						if (ignoreData.IgnoreAsParameter)
 							continue;
 
+					var value = prop.GetValue(item);
+
 					var typeName = "";
 					var columnName = "";
 					var parameterName = prop.Name;
 					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
 					{
-						parameterName = overrideName.ParameterName;
-						typeName = overrideName.TypeName;
-						columnName = overrideName.ColumnName;
+						if (overrideName.ParameterName != null)
+							parameterName = overrideName.ParameterName;
+						if (overrideName.TypeName != null)
+							typeName = overrideName.TypeName;
+						if (overrideName.ColumnName != null)
+							columnName = overrideName.ColumnName;
+						if (overrideName.Serializer != null)
+						{
+							var serializer = Serializers[overrideName.Serializer];
+							value = serializer.Serialize(value);
+						}
 					}
-					var value = prop.GetValue(item);
 
 					if (value is List<dynamic> lst)
 						parameters.Add(new SQLListParam<dynamic>(parameterName, lst, columnName, typeName));

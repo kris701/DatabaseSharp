@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DatabaseSharp.Serializers;
+using System.Collections;
 using System.Data;
 
 namespace DatabaseSharp.Models
@@ -9,6 +10,11 @@ namespace DatabaseSharp.Models
 	public class DatabaseResultTable : IEnumerable<DatabaseResultRow>
 	{
 		/// <summary>
+		/// Set of optional property serializers
+		/// </summary>
+		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
+
+		/// <summary>
 		/// Number of rows in the table
 		/// </summary>
 		public int Count => _table.Rows.Count;
@@ -17,7 +23,7 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public DatabaseResultRow this[int index] => new DatabaseResultRow(_table.Rows[index]);
+		public DatabaseResultRow this[int index] => new DatabaseResultRow(_table.Rows[index], Serializers);
 
 		private readonly DataTable _table;
 
@@ -25,9 +31,11 @@ namespace DatabaseSharp.Models
 		/// Main constructor
 		/// </summary>
 		/// <param name="table"></param>
-		public DatabaseResultTable(DataTable table)
+		/// <param name="serializers"></param>
+		public DatabaseResultTable(DataTable table, Dictionary<string, IDatabaseSerializer> serializers)
 		{
 			_table = table;
+			Serializers = serializers;
 		}
 
 		/// <summary>
@@ -82,7 +90,7 @@ namespace DatabaseSharp.Models
 			return result;
 		}
 
-		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table);
+		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table, Serializers);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -90,16 +98,18 @@ namespace DatabaseSharp.Models
 		{
 			private readonly DataTable _table;
 			private int _index;
+			private Dictionary<string, IDatabaseSerializer> _serializers;
 
-			public DatabaseResultTableEnumerator(DataTable table)
+			public DatabaseResultTableEnumerator(DataTable table, Dictionary<string, IDatabaseSerializer> serializers)
 			{
 				_table = table;
 				_index = -1;
+				_serializers = serializers;
 			}
 
-			public DatabaseResultRow Current => new DatabaseResultRow(_table.Rows[_index]);
+			public DatabaseResultRow Current => new DatabaseResultRow(_table.Rows[_index], _serializers);
 
-			object IEnumerator.Current => new DatabaseResultRow(_table.Rows[_index]);
+			object IEnumerator.Current => new DatabaseResultRow(_table.Rows[_index], _serializers);
 
 			public void Dispose()
 			{

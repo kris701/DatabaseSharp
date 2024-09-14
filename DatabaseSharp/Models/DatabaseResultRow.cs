@@ -1,15 +1,22 @@
-﻿using System.Data;
+﻿using DatabaseSharp.Serializers;
+using System.Data;
 using System.Reflection;
 
 namespace DatabaseSharp.Models
 {
 	public class DatabaseResultRow
 	{
+		/// <summary>
+		/// Set of optional property serializers
+		/// </summary>
+		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
+
 		private readonly DataRow _row;
 
-		public DatabaseResultRow(DataRow row)
+		public DatabaseResultRow(DataRow row, Dictionary<string, IDatabaseSerializer> serializers)
 		{
 			_row = row;
+			Serializers = serializers;
 		}
 
 		/// <summary>
@@ -31,8 +38,19 @@ namespace DatabaseSharp.Models
 						continue;
 
 				var columnName = prop.Name;
-				if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
-					columnName = overrideName.ColumnName;
+				if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideAttribute)
+				{
+					if (overrideAttribute.ColumnName != null)
+						columnName = overrideAttribute.ColumnName;
+
+					if (overrideAttribute.Serializer != null)
+					{
+						var serializer = Serializers[overrideAttribute.Serializer];
+						var value = GetValue(columnName, typeof(string));
+						prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
+						continue;
+					}
+				}
 				prop.SetValue(instance, GetValue(columnName, prop.PropertyType));
 			}
 

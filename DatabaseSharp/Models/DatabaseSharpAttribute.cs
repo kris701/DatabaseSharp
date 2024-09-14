@@ -9,16 +9,21 @@
 		/// <summary>
 		/// Name of the input parameter for the STP
 		/// </summary>
-		public string ParameterName { get; set; } = "";
+		public string? ParameterName { get; set; } = null;
 
 		/// <summary>
 		/// Name of the column in the database
 		/// </summary>
-		public string ColumnName { get; set; } = "";
+		public string? ColumnName { get; set; } = null;
 
 		/// <summary>
 		/// Optional type name
 		/// </summary>
-		public string TypeName { get; set; } = "";
+		public string? TypeName { get; set; } = null;
+
+		/// <summary>
+		/// Optional serializer for property to string and vise versa
+		/// </summary>
+		public string? Serializer { get; set; } = null;
 	}
 }

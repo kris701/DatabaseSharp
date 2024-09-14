@@ -1,4 +1,5 @@
 ﻿using DatabaseSharp.Models;
+using DatabaseSharp.Serializers;
 
 namespace DatabaseSharp
 {
@@ -7,6 +8,11 @@ namespace DatabaseSharp
 	/// </summary>
 	public interface IDBClient
 	{
+		/// <summary>
+		/// Set of optional property serializers
+		/// </summary>
+		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
+
 		/// <summary>
 		/// Execute a STP with a set of parameters (if any).
 		/// </summary>
