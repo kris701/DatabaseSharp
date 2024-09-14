@@ -86,16 +86,34 @@ namespace DatabaseSharp
 		{
 			var parameters = new List<ISQLParameter>();
 			if (item != null)
+				parameters = GenerateParametersFromObject(item);
+
+			return await ExecuteAsync(procedureName, parameters);
+		}
+
+		/// <summary>
+		/// Automatically generate STP parameters based on a given object
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
+		public List<ISQLParameter>? GenerateParametersFromObject(object item)
+		{
+			var parameters = new List<ISQLParameter>();
+			if (item != null)
 			{
 				var props = item.GetType().GetProperties();
 				foreach (var prop in props)
 				{
+					if (prop.GetCustomAttribute<DatabaseSharpIgnoreAttribute>() is DatabaseSharpIgnoreAttribute ignoreData)
+						if (ignoreData.IgnoreAsParameter)
+							continue;
+
 					var typeName = "";
 					var columnName = "";
 					var parameterName = prop.Name;
 					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
 					{
-						parameterName = overrideName.ColumnName;
+						parameterName = overrideName.ParameterName;
 						typeName = overrideName.TypeName;
 						columnName = overrideName.ColumnName;
 					}
@@ -107,8 +125,9 @@ namespace DatabaseSharp
 						parameters.Add(new SQLParam(parameterName, value));
 				}
 			}
-
-			return await ExecuteAsync(procedureName, parameters);
+			if (parameters.Count == 0)
+				return null;
+			return parameters;
 		}
 	}
 }

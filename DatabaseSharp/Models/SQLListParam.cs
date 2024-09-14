@@ -39,6 +39,10 @@ namespace DatabaseSharp.Models
 			DatabaseTypeName = databaseTypeName;
 		}
 
+		/// <summary>
+		/// Generate a datatable from this object
+		/// </summary>
+		/// <returns></returns>
 		public DataTable CreateDataTable()
 		{
 			DataTable table = new DataTable();

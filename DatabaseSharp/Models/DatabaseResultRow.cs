@@ -26,6 +26,10 @@ namespace DatabaseSharp.Models
 			var props = instance.GetType().GetProperties();
 			foreach (var prop in props)
 			{
+				if (prop.GetCustomAttribute<DatabaseSharpIgnoreAttribute>() is DatabaseSharpIgnoreAttribute ignoreData)
+					if (ignoreData.IgnoreAsFill)
+						continue;
+
 				var columnName = prop.Name;
 				if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
 					columnName = overrideName.ColumnName;
