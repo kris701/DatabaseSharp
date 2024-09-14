@@ -86,8 +86,10 @@ namespace DatabaseSharp.Models
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
+			else if (type == typeof(Guid))
+				return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
 
-			return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
+			return Convert.ChangeType(getObj.ToString(), type, System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
@@ -117,6 +119,8 @@ namespace DatabaseSharp.Models
 					return (T)(object)dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
+			else if (typeof(T) == typeof(Guid))
+				return (T)Convert.ChangeType(getObj, typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 
 			return (T)Convert.ChangeType(getObj.ToString(), typeof(T), System.Globalization.CultureInfo.InvariantCulture);
 		}
