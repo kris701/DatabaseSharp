@@ -19,6 +19,10 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		public int Count => _table.Rows.Count;
 		/// <summary>
+		/// Number of rows in the table
+		/// </summary>
+		public List<string> Columns { get; }
+		/// <summary>
 		/// Get a row from the datatable
 		/// </summary>
 		/// <param name="index"></param>
@@ -36,6 +40,9 @@ namespace DatabaseSharp.Models
 		{
 			_table = table;
 			Serializers = serializers;
+			Columns = new List<string>();
+			foreach (DataColumn col in _table.Columns)
+				Columns.Add(col.ColumnName);
 		}
 
 		/// <summary>
