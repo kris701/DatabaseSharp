@@ -2,6 +2,7 @@
 using DatabaseSharp.Serializers;
 using System.Collections;
 using System.Data;
+using System.Reflection;
 
 namespace DatabaseSharp.Models
 {
@@ -61,16 +62,21 @@ namespace DatabaseSharp.Models
 			}
 			else
 			{
-				var parameters = ParameterHelpers.GenerateParametersFromObject(Values[0], serializers);
-				if (parameters == null || parameters.Count == 0)
+				var props = Values[0].GetType().GetProperties().ToList();
+				props.RemoveAll(prop => 
+					prop.GetCustomAttribute<DatabaseSharpIgnoreAttribute>() is DatabaseSharpIgnoreAttribute ignoreData &&
+					ignoreData.IgnoreAsParameter);
+				if (props.Count == 0)
 					return table;
 
-				foreach (var param in parameters)
+				foreach (var prop in props)
 				{
-					if (param is SQLListParam)
-						throw new Exception("Cannot create a table valued argument inside a table valued argument!");
-					if (param is SQLParam actual)
-						table.Columns.Add(actual.Name, actual.Value.GetType());
+					var propName = prop.Name;
+					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
+						if (overrideName.ParameterName != null)
+							propName = overrideName.ParameterName;
+
+					table.Columns.Add(propName, GetActualType(prop.PropertyType));
 				}
 
 				foreach (var value in Values)
@@ -80,13 +86,27 @@ namespace DatabaseSharp.Models
 						continue;
 					var row = table.NewRow();
 					foreach (var valueParam in valueParameters)
+					{
 						if (valueParam is SQLParam actual)
-							row[actual.Name] = actual.Value;
+						{
+							if (actual.Value == null)
+								row[actual.Name] = DBNull.Value;
+							else
+								row[actual.Name] = actual.Value;
+						}
+					}
 					table.Rows.Add(row);
 				}
 
 				return table;
 			}
+		}
+
+		private Type GetActualType(Type type)
+		{
+			if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+				return Nullable.GetUnderlyingType(type);
+			return type;
 		}
 
 		public override int GetHashCode()

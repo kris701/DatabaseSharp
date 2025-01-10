@@ -6,7 +6,7 @@ namespace DatabaseSharp.Tests.TestModels
 	[JsonDerivedType(typeof(TestClass3), typeDiscriminator: "abc")]
 	public interface ITestInterface
 	{
-		public Guid ID { get; set; }
+		public Guid? ID { get; set; }
 		public string Name { get; set; }
 	}
 }

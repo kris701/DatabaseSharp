@@ -30,6 +30,26 @@ namespace DatabaseSharp.Tests.Models
 		}
 
 		[TestMethod]
+		public void Can_CreateDatatableOfSimples_Empty()
+		{
+			// ARRANGE
+			var item = new TestClass()
+			{
+				Guids = new List<Guid>()
+				{
+				}
+			};
+			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
+
+			// ACT
+			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+
+			// ASSERT
+			Assert.AreEqual(0, table.Rows.Count);
+		}
+
+		[TestMethod]
 		public void Can_CreateDatatableOfComplexes()
 		{
 			// ARRANGE
@@ -55,6 +75,12 @@ namespace DatabaseSharp.Tests.Models
 						ID = new Guid("841cee85-819d-4b36-bd04-1d3f9d637c61"),
 						LongName = "bbbbb",
 						Name = "a"
+					},
+					new TestClass3()
+					{
+						ID = null,
+						LongName = "bbbbb",
+						Name = "a"
 					}
 				}
 			};
@@ -65,10 +91,66 @@ namespace DatabaseSharp.Tests.Models
 			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
 
 			// ASSERT
-			Assert.AreEqual(3, table.Rows.Count);
+			Assert.AreEqual(4, table.Rows.Count);
+			Assert.AreEqual(4, table.Columns.Count);
 			Assert.IsTrue(table.Columns.Contains("ID"));
 			Assert.IsTrue(table.Columns.Contains("Name"));
 			Assert.IsTrue(table.Columns.Contains("even_longer_name"));
+			Assert.IsTrue(table.Columns.Contains("Time"));
+		}
+
+		[TestMethod]
+		public void Can_CreateDatatableOfComplexes_2()
+		{
+			// ARRANGE
+			var item = new TestClass4()
+			{
+				Name = "test",
+				Items = new List<TestClass3>()
+				{
+					new TestClass3()
+					{
+						ID = null,
+						LongName = "bbbbb",
+						Name = "a"
+					}
+				}
+			};
+			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
+
+			// ACT
+			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+
+			// ASSERT
+			Assert.AreEqual(1, table.Rows.Count);
+			Assert.AreEqual(4, table.Columns.Count);
+			Assert.IsTrue(table.Columns.Contains("ID"));
+			Assert.IsTrue(table.Columns.Contains("Name"));
+			Assert.IsTrue(table.Columns.Contains("even_longer_name"));
+			Assert.IsTrue(table.Columns.Contains("Time"));
+		}
+
+		[TestMethod]
+		public void Can_CreateDatatableOfComplexes_Empty()
+		{
+			// ARRANGE
+			var item = new TestClass4()
+			{
+				Name = "test",
+				Items = new List<TestClass3>()
+				{
+				}
+			};
+			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
+
+			// ACT
+			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+
+			// ASSERT
+			Assert.AreEqual(0, table.Rows.Count);
+			Assert.AreEqual(0, table.Columns.Count);
 		}
 	}
 }
