@@ -90,6 +90,8 @@ namespace DatabaseSharp.Models
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
+			else if (type == typeof(TimeSpan))
+				return TimeSpan.Parse(getObj.ToString());
 			else if (type == typeof(Guid))
 				return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
 
@@ -125,6 +127,8 @@ namespace DatabaseSharp.Models
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
+			else if (type == typeof(TimeSpan))
+				return TimeSpan.Parse(getObj.ToString());
 			else if (type == typeof(Guid))
 				return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
 
