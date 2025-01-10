@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DatabaseSharp.Models
+﻿namespace DatabaseSharp.Models
 {
 	/// <summary>
 	/// Attribute to ignore a property

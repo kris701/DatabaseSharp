@@ -28,12 +28,5 @@ namespace DatabaseSharp
 		/// <param name="item"></param>
 		/// <returns></returns>
 		public Task<DatabaseResult> ExecuteAsync(string procedureName, object item);
-
-		/// <summary>
-		/// Automatically generate STP parameters based on a given object
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public List<ISQLParameter>? GenerateParametersFromObject(object item);
 	}
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using DatabaseSharp.Helpers;
+using DatabaseSharp.Serializers;
+using System.Collections;
 using System.Data;
 
 namespace DatabaseSharp.Models
@@ -44,15 +46,47 @@ namespace DatabaseSharp.Models
 		/// Generate a datatable from this object
 		/// </summary>
 		/// <returns></returns>
-		public DataTable CreateDataTable()
+		public DataTable CreateDataTable(Dictionary<string, IDatabaseSerializer> serializers)
 		{
 			DataTable table = new DataTable();
 			if (Values.Count == 0)
 				return table;
-			table.Columns.Add(TableColumnName, Values[0].GetType());
-			foreach (var value in Values)
-				table.Rows.Add(value);
-			return table;
+			var type = Values[0].GetType();
+			if (type.IsPrimitive || type == typeof(Guid) || type == typeof(string))
+			{
+				table.Columns.Add(TableColumnName, type);
+				foreach (var value in Values)
+					table.Rows.Add(value);
+				return table;
+			}
+			else
+			{
+				var parameters = ParameterHelpers.GenerateParametersFromObject(Values[0], serializers);
+				if (parameters == null || parameters.Count == 0)
+					return table;
+
+				foreach (var param in parameters)
+				{
+					if (param is SQLListParam)
+						throw new Exception("Cannot create a table valued argument inside a table valued argument!");
+					if (param is SQLParam actual)
+						table.Columns.Add(actual.Name, actual.Value.GetType());
+				}
+
+				foreach (var value in Values)
+				{
+					var valueParameters = ParameterHelpers.GenerateParametersFromObject(value, serializers);
+					if (valueParameters == null)
+						continue;
+					var row = table.NewRow();
+					foreach (var valueParam in valueParameters)
+						if (valueParam is SQLParam actual)
+							row[actual.Name] = actual.Value;
+					table.Rows.Add(row);
+				}
+
+				return table;
+			}
 		}
 
 		public override int GetHashCode()

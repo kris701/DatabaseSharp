@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using DatabaseSharp.Serializers;
+using System.Data;
 
 namespace DatabaseSharp.Models
 {
@@ -16,6 +17,6 @@ namespace DatabaseSharp.Models
 		/// Generate a datatable from this object
 		/// </summary>
 		/// <returns></returns>
-		public DataTable CreateDataTable();
+		public DataTable CreateDataTable(Dictionary<string, IDatabaseSerializer> serializers);
 	}
 }

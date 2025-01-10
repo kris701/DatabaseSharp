@@ -1,10 +1,9 @@
-﻿using DatabaseSharp.Models;
+﻿using DatabaseSharp.Helpers;
+using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
-using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
-using System.Reflection;
 
 namespace DatabaseSharp
 {
@@ -64,7 +63,7 @@ namespace DatabaseSharp
 							else if (type.IsAssignableTo(typeof(IListHandler)))
 							{
 								var p = (IListHandler)s;
-								var values = p.CreateDataTable();
+								var values = p.CreateDataTable(Serializers);
 								if (values.Rows.Count > 0)
 								{
 									var added = sqlCmd.Parameters.AddWithValue(s.Name, values);
@@ -94,55 +93,6 @@ namespace DatabaseSharp
 		/// <param name="procedureName"></param>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item) => await ExecuteAsync(procedureName, GenerateParametersFromObject(item));
-
-		/// <summary>
-		/// Automatically generate STP parameters based on a given object
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public List<ISQLParameter>? GenerateParametersFromObject(object item)
-		{
-			var parameters = new List<ISQLParameter>();
-			if (item != null)
-			{
-				var props = item.GetType().GetProperties();
-				foreach (var prop in props)
-				{
-					if (prop.GetCustomAttribute<DatabaseSharpIgnoreAttribute>() is DatabaseSharpIgnoreAttribute ignoreData)
-						if (ignoreData.IgnoreAsParameter)
-							continue;
-
-					var value = prop.GetValue(item);
-
-					var typeName = "";
-					var columnName = "";
-					var parameterName = prop.Name;
-					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
-					{
-						if (overrideName.ParameterName != null)
-							parameterName = overrideName.ParameterName;
-						if (overrideName.TypeName != null)
-							typeName = overrideName.TypeName;
-						if (overrideName.ColumnName != null)
-							columnName = overrideName.ColumnName;
-						if (overrideName.Serializer != null)
-						{
-							var serializer = Serializers[overrideName.Serializer];
-							value = serializer.Serialize(value, prop.PropertyType);
-						}
-					}
-
-					if (value is IList lst)
-						parameters.Add(new SQLListParam(parameterName, lst, columnName, typeName));
-					else
-						parameters.Add(new SQLParam(parameterName, value));
-				}
-			}
-
-			if (parameters.Count == 0)
-				return null;
-			return parameters;
-		}
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item) => await ExecuteAsync(procedureName, ParameterHelpers.GenerateParametersFromObject(item, Serializers));
 	}
 }

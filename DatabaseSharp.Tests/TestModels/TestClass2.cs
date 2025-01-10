@@ -1,6 +1,5 @@
 ﻿using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
-using System.Text.Json;
 
 namespace DatabaseSharp.Tests.TestModels
 {

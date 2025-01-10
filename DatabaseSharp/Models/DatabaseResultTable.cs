@@ -105,7 +105,7 @@ namespace DatabaseSharp.Models
 		{
 			private readonly DataTable _table;
 			private int _index;
-			private Dictionary<string, IDatabaseSerializer> _serializers;
+			private readonly Dictionary<string, IDatabaseSerializer> _serializers;
 
 			public DatabaseResultTableEnumerator(DataTable table, Dictionary<string, IDatabaseSerializer> serializers)
 			{

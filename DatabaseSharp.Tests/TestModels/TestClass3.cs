@@ -1,6 +1,4 @@
 ﻿using DatabaseSharp.Models;
-using DatabaseSharp.Serializers;
-using System.Text.Json;
 
 namespace DatabaseSharp.Tests.TestModels
 {
@@ -8,6 +6,7 @@ namespace DatabaseSharp.Tests.TestModels
 	{
 		public Guid ID { get; set; } = new Guid("062f1af2-c85a-4a17-aaf0-c8b77ab92dbd");
 		public string Name { get; set; } = "ad";
+		[DatabaseSharp(ParameterName = "even_longer_name")]
 		public string LongName { get; set; } = "asdasd";
 	}
 }

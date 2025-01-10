@@ -61,7 +61,7 @@ namespace DatabaseSharp.Models
 		{
 			private readonly DataSet _dataset;
 			private int _index;
-			private Dictionary<string, IDatabaseSerializer> _serializers;
+			private readonly Dictionary<string, IDatabaseSerializer> _serializers;
 
 			public DatabaseResultEnumerator(DataSet dataset, Dictionary<string, IDatabaseSerializer> serializers)
 			{
