@@ -1,6 +1,7 @@
 ﻿using DatabaseSharp.Models;
 using DatabaseSharp.Tests.TestModels;
 using System.Data;
+using System.Data.SqlClient;
 using System.Text.Json;
 
 namespace DatabaseSharp.Tests.Serializers
