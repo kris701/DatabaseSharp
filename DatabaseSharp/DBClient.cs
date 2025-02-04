@@ -49,7 +49,7 @@ namespace DatabaseSharp
 			{
 				using (SqlCommand sqlCmd = new SqlCommand(procedureName, sqlConn))
 				{
-					sqlCmd.CommandTimeout = sqlCmd.CommandTimeout;
+					sqlCmd.CommandTimeout = sqlConn.ConnectionTimeout;
 					sqlCmd.CommandType = CommandType.StoredProcedure;
 					if (parameters != null)
 					{
