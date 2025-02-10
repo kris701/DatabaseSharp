@@ -80,12 +80,14 @@ namespace DatabaseSharp.Models
 			if (type == typeof(bool))
 			{
 				if (getObj.ToString() == "1")
-					getObj = "true";
-				else if (getObj.ToString() == "0")
-					getObj = "false";
+					return true;
+				if (getObj.ToString() == "0")
+					return false;
 			}
 			else if (getObj is DateTime dateTime)
 			{
+				// Simply always assume the data saved is in UTC time
+				dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
 				if (type == typeof(DateTime))
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
@@ -117,12 +119,14 @@ namespace DatabaseSharp.Models
 			if (type == typeof(bool))
 			{
 				if (getObj.ToString() == "1")
-					getObj = "true";
-				else if (getObj.ToString() == "0")
-					getObj = "false";
+					return true;
+				if (getObj.ToString() == "0")
+					return false;
 			}
 			else if (getObj is DateTime dateTime)
 			{
+				// Simply always assume the data saved is in UTC time
+				dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
 				if (type == typeof(DateTime))
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
