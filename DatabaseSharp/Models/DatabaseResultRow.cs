@@ -53,7 +53,7 @@ namespace DatabaseSharp.Models
 							if (value == null)
 								prop.SetValue(instance, null);
 							else
-								prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
+								prop.SetValue(instance, serializer.Deserialise(value, underlying));
 							continue;
 						}
 						else
