@@ -1,4 +1,5 @@
 ﻿using DatabaseSharp.Models;
+using DatabaseSharp.Serializers;
 using DatabaseSharp.Tests.TestModels;
 using System.Data;
 
@@ -62,11 +63,13 @@ namespace DatabaseSharp.Tests.Models
 			table.Columns.Add(new DataColumn("col2", typeof(int)));
 			table.Columns.Add(new DataColumn("col3", typeof(DateTime)));
 			table.Columns.Add(new DataColumn("col4", typeof(double)));
+			table.Columns.Add(new DataColumn("col5", typeof(TestEnum)));
 			table.Rows.Add(table.NewRow());
 			table.Rows[0].SetField(table.Columns[0], "abc");
 			table.Rows[0].SetField(table.Columns[1], 123);
 			table.Rows[0].SetField<DateTime?>(table.Columns[2], null);
 			table.Rows[0].SetField(table.Columns[3], 4.2);
+			table.Rows[0].SetField<TestEnum?>(table.Columns[4], null);
 			table.Rows.Add(table.NewRow());
 			dataset.Tables.Add(table);
 			var result = new DatabaseResult(dataset);
@@ -78,6 +81,7 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual(123, row.GetValueOrNull<int>("col2"));
 			Assert.IsNull(row.GetValueOrNull<DateTime>("col3"));
 			Assert.AreEqual(4.2, row.GetValueOrNull<double>("col4"));
+			Assert.IsNull(row.GetValueOrNull<TestEnum>("col5"));
 		}
 
 		[TestMethod]
@@ -107,6 +111,33 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual("abc", filled.Name);
 			Assert.AreEqual(123, filled.SomeValue);
 			Assert.AreEqual(tstID, filled.ID);
+		}
+
+		[TestMethod]
+		public void Can_Fill2()
+		{
+			// ARRANGE
+			var tstID = Guid.NewGuid();
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("Nullable1", typeof(int)));
+			table.Columns.Add(new DataColumn("Nullable2", typeof(TestEnum)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField<int?>(table.Columns[0], 10);
+			table.Rows[0].SetField<TestEnum?>(table.Columns[1], null);
+			table.Rows.Add(table.NewRow());
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+			result.Serializers.Add(DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer());
+
+			// ACT
+
+			// ASSERT
+			var row = result[0][0];
+			var filled = row.Fill<TestClass6>();
+			Assert.IsNotNull(filled);
+			Assert.AreEqual(10, filled.Nullable1);
+			Assert.IsNull(filled.Nullable2);
 		}
 	}
 }

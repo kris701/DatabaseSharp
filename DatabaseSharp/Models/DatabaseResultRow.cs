@@ -38,6 +38,7 @@ namespace DatabaseSharp.Models
 						continue;
 
 				var columnName = prop.Name;
+				var underlying = Nullable.GetUnderlyingType(prop.PropertyType);
 				if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideAttribute)
 				{
 					if (overrideAttribute.ColumnName != null)
@@ -45,13 +46,25 @@ namespace DatabaseSharp.Models
 
 					if (overrideAttribute.Serializer != null)
 					{
-						var serializer = Serializers[overrideAttribute.Serializer];
-						var value = GetValue(columnName, typeof(string));
-						prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
-						continue;
+						if (underlying != null)
+						{
+							var serializer = Serializers[overrideAttribute.Serializer];
+							var value = GetValueOrNull(columnName, typeof(string));
+							if (value == null)
+								prop.SetValue(instance, null);
+							else
+								prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
+							continue;
+						}
+						else
+						{
+							var serializer = Serializers[overrideAttribute.Serializer];
+							var value = GetValue(columnName, typeof(string));
+							prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
+							continue;
+						}							
 					}
-				}
-				var underlying = Nullable.GetUnderlyingType(prop.PropertyType);
+				}				
 				if (underlying != null)
 					prop.SetValue(instance, GetValueOrNull(columnName, underlying));
 				else

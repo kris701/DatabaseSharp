@@ -52,8 +52,11 @@ namespace DatabaseSharp.Helpers
 					columnName = overrideName.ColumnName;
 				if (overrideName.Serializer != null)
 				{
-					var serializer = serializers[overrideName.Serializer];
-					value = serializer.Serialize(value, prop.PropertyType);
+					if (value != null)
+					{
+						var serializer = serializers[overrideName.Serializer];
+						value = serializer.Serialize(value, prop.PropertyType);
+					}
 				}
 			}
 
