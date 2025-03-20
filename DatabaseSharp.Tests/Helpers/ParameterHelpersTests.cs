@@ -42,5 +42,27 @@ namespace DatabaseSharp.Tests.Helpers
 			Assert.IsTrue(parameters.Any(x => x.Name == "Nullable1"));
 			Assert.IsTrue(parameters.Any(x => x.Name == "Nullable2"));
 		}
+
+		[TestMethod]
+		public void Can_GenerateSTPParameters3()
+		{
+			// ARRANGE
+			var item = new TestClass7()
+			{
+				Nullable1 = 50,
+				Nullable2 = new List<TestClass6>()
+				{
+					new TestClass6()
+				}
+			};
+
+			// ACT
+			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>() { { DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() } });
+
+			// ASSERT
+			Assert.IsNotNull(parameters);
+			Assert.IsTrue(parameters.Any(x => x.Name == "Nullable1"));
+			Assert.IsTrue(parameters.Any(x => x.Name == "Nullable2"));
+		}
 	}
 }

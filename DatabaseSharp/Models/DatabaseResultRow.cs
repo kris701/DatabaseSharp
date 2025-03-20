@@ -59,8 +59,11 @@ namespace DatabaseSharp.Models
 						else
 						{
 							var serializer = Serializers[overrideAttribute.Serializer];
-							var value = GetValue(columnName, typeof(string));
-							prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
+							var value = GetValueOrNull(columnName, typeof(string));
+							if (value == null)
+								prop.SetValue(instance, null);
+							else
+								prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
 							continue;
 						}							
 					}

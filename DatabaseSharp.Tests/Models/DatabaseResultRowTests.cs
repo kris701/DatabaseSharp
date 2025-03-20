@@ -139,5 +139,32 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual(10, filled.Nullable1);
 			Assert.IsNull(filled.Nullable2);
 		}
+
+		[TestMethod]
+		public void Can_Fill3()
+		{
+			// ARRANGE
+			var tstID = Guid.NewGuid();
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("Nullable1", typeof(int)));
+			table.Columns.Add(new DataColumn("Nullable2", typeof(string)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField<int?>(table.Columns[0], 10);
+			table.Rows[0].SetField<string?>(table.Columns[1], null);
+			table.Rows.Add(table.NewRow());
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+			result.Serializers.Add(DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer());
+
+			// ACT
+
+			// ASSERT
+			var row = result[0][0];
+			var filled = row.Fill<TestClass7>();
+			Assert.IsNotNull(filled);
+			Assert.AreEqual(10, filled.Nullable1);
+			Assert.IsNull(filled.Nullable2);
+		}
 	}
 }
