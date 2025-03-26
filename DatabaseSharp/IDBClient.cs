@@ -9,6 +9,11 @@ namespace DatabaseSharp
 	public interface IDBClient
 	{
 		/// <summary>
+		/// Connection string to the database
+		/// </summary>
+		public string ConnectionString { get; set; }
+
+		/// <summary>
 		/// Set of optional property serializers
 		/// </summary>
 		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
