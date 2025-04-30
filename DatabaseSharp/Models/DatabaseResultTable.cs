@@ -70,6 +70,18 @@ namespace DatabaseSharp.Models
 		}
 
 		/// <summary>
+		/// Create a list of all the rows in the table
+		/// </summary>
+		/// <returns></returns>
+		public List<dynamic> FillAll(Type asType)
+		{
+			var result = new List<dynamic>();
+			foreach (var row in this)
+				result.Add(row.Fill(asType));
+			return result;
+		}
+
+		/// <summary>
 		/// Get a column value across all rows in the table
 		/// </summary>
 		/// <typeparam name="T"></typeparam>

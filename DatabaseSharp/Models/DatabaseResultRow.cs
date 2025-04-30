@@ -29,6 +29,19 @@ namespace DatabaseSharp.Models
 			var instance = new T();
 			if (instance == null)
 				throw new Exception("Could not create an empty instance of the class!");
+			return Fill(instance.GetType());
+		}
+
+		/// <summary>
+		/// Attempt to deserialize the row into a class object
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public dynamic Fill(Type asType)
+		{
+			var instance = Activator.CreateInstance(asType);
+			if (instance == null)
+				throw new Exception("Could not create an empty instance of the class!");
 
 			var props = instance.GetType().GetProperties();
 			foreach (var prop in props)
@@ -65,9 +78,9 @@ namespace DatabaseSharp.Models
 							else
 								prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
 							continue;
-						}							
+						}
 					}
-				}				
+				}
 				if (underlying != null)
 					prop.SetValue(instance, GetValueOrNull(columnName, underlying));
 				else
