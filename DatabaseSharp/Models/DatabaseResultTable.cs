@@ -61,11 +61,11 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public List<T> FillAll<T>() where T : class, new()
+		public List<T> FillAll<T>(DatabaseResult? source = null) where T : class, new()
 		{
 			var result = new List<T>();
 			foreach (var row in this)
-				result.Add(row.Fill<T>());
+				result.Add(row.Fill<T>(source));
 			return result;
 		}
 
@@ -73,11 +73,11 @@ namespace DatabaseSharp.Models
 		/// Create a list of all the rows in the table
 		/// </summary>
 		/// <returns></returns>
-		public List<dynamic> FillAll(Type asType)
+		public IList FillAll(Type asType, DatabaseResult? source = null)
 		{
-			var result = new List<dynamic>();
+			var result = CreateList(asType);
 			foreach (var row in this)
-				result.Add(row.Fill(asType));
+				result.Add(row.Fill(asType, source));
 			return result;
 		}
 
@@ -96,6 +96,19 @@ namespace DatabaseSharp.Models
 		}
 
 		/// <summary>
+		/// Get a column value across all rows in the table
+		/// </summary>
+		/// <param name="columnName"></param>
+		/// <returns></returns>
+		public IList GetAllValues(Type asType, string columnName)
+		{
+			var result = CreateList(asType);
+			foreach (var row in this)
+				result.Add(row.GetValue(asType, columnName));
+			return result;
+		}
+
+		/// <summary>
 		/// Get a value (or null) across all rows in the table
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -107,6 +120,25 @@ namespace DatabaseSharp.Models
 			foreach (var row in this)
 				result.Add(row.GetValueOrNull<T>(columnName));
 			return result;
+		}
+
+		/// <summary>
+		/// Get a value (or null) across all rows in the table
+		/// </summary>
+		/// <param name="columnName"></param>
+		/// <returns></returns>
+		public IList GetAllValuesOrNull(Type asType, string columnName)
+		{
+			var result = CreateList(asType);
+			foreach (var row in this)
+				result.Add(row.GetValueOrNull(asType, columnName));
+			return result;
+		}
+
+		private IList CreateList(Type myType)
+		{
+			Type genericListType = typeof(List<>).MakeGenericType(myType);
+			return (IList)Activator.CreateInstance(genericListType);
 		}
 
 		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table, Serializers);

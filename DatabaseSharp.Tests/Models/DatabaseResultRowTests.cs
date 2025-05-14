@@ -2,6 +2,7 @@
 using DatabaseSharp.Serializers;
 using DatabaseSharp.Tests.TestModels;
 using System.Data;
+using System.Text.Json;
 
 namespace DatabaseSharp.Tests.Models
 {
@@ -117,7 +118,6 @@ namespace DatabaseSharp.Tests.Models
 		public void Can_Fill2()
 		{
 			// ARRANGE
-			var tstID = Guid.NewGuid();
 			var dataset = new DataSet();
 			var table = new DataTable();
 			table.Columns.Add(new DataColumn("Nullable1", typeof(int)));
@@ -144,7 +144,6 @@ namespace DatabaseSharp.Tests.Models
 		public void Can_Fill3()
 		{
 			// ARRANGE
-			var tstID = Guid.NewGuid();
 			var dataset = new DataSet();
 			var table = new DataTable();
 			table.Columns.Add(new DataColumn("Nullable1", typeof(int)));
@@ -165,6 +164,86 @@ namespace DatabaseSharp.Tests.Models
 			Assert.IsNotNull(filled);
 			Assert.AreEqual(10, filled.Nullable1);
 			Assert.IsNull(filled.Nullable2);
+		}
+
+		[TestMethod]
+		public void Can_Fill4()
+		{
+			// ARRANGE
+			var dataset = new DataSet();
+			var table1 = new DataTable();
+			table1.Columns.Add(new DataColumn("Name", typeof(string)));
+			table1.Columns.Add(new DataColumn("Value", typeof(string)));
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows[0].SetField<string>(table1.Columns[0], "test name");
+			table1.Rows[0].SetField<string>(table1.Columns[1], "test");
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows[1].SetField<string>(table1.Columns[0], "test name 2");
+			table1.Rows[1].SetField<string>(table1.Columns[1], "test 2");
+			dataset.Tables.Add(table1);
+			var table2 = new DataTable();
+			table2.Columns.Add(new DataColumn("val1", typeof(int)));
+			table2.Columns.Add(new DataColumn("val2", typeof(string)));
+			table2.Rows.Add(table2.NewRow());
+			table2.Rows[0].SetField<int>(table2.Columns[0], 10);
+			table2.Rows[0].SetField<string>(table2.Columns[1], "test");
+			table2.Rows.Add(table2.NewRow());
+			table2.Rows[1].SetField<int>(table2.Columns[0], 10);
+			table2.Rows[1].SetField<string>(table2.Columns[1], "test 2");
+			dataset.Tables.Add(table2);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+
+			// ASSERT
+			var row = result[0][0];
+			var filled = row.Fill<TestClass8>(result);
+			Assert.IsNotNull(filled);
+			Assert.AreEqual("test name", filled.Name);
+			Assert.AreEqual("test", filled.Value);
+			Assert.AreEqual(2, filled.Items.Count);
+		}
+
+		[TestMethod]
+		public void Can_Fill5()
+		{
+			// ARRANGE
+			var dataset = new DataSet();
+			var table1 = new DataTable();
+			table1.Columns.Add(new DataColumn("Name", typeof(string)));
+			table1.Columns.Add(new DataColumn("Value", typeof(string)));
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows[0].SetField<string>(table1.Columns[0], "test name");
+			table1.Rows[0].SetField<string>(table1.Columns[1], "test");
+			table1.Rows.Add(table1.NewRow());
+			table1.Rows[1].SetField<string>(table1.Columns[0], "test name 2");
+			table1.Rows[1].SetField<string>(table1.Columns[1], "test 2");
+			dataset.Tables.Add(table1);
+			var table2 = new DataTable();
+			table2.Columns.Add(new DataColumn("ID", typeof(Guid)));
+			table2.Columns.Add(new DataColumn("Name", typeof(string)));
+			table2.Columns.Add(new DataColumn("LongName", typeof(string)));
+			table2.Columns.Add(new DataColumn("Time", typeof(TimeSpan)));
+			table2.Rows.Add(table2.NewRow());
+			table2.Rows[0].SetField<Guid>(table2.Columns[0], Guid.NewGuid());
+			table2.Rows[0].SetField<string>(table2.Columns[1], "name");
+			table2.Rows[0].SetField<string>(table2.Columns[2], "longer name");
+			table2.Rows[0].SetField<TimeSpan>(table2.Columns[3], TimeSpan.FromSeconds(10));
+			dataset.Tables.Add(table2);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+
+			// ASSERT
+			var row = result[0][0];
+			var filled = row.Fill<TestClass9>(result);
+			Assert.IsNotNull(filled);
+			Assert.AreEqual("test name", filled.Name);
+			Assert.AreEqual("test", filled.Value);
+			Assert.AreEqual(1, filled.Items.Count);
+			Assert.AreEqual("name", filled.Items[0].Name);
+			Assert.AreEqual("longer name", filled.Items[0].LongName);
+			Assert.AreEqual(TimeSpan.FromSeconds(10), filled.Items[0].Time);
 		}
 	}
 }

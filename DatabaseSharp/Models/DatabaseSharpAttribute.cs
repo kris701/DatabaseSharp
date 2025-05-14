@@ -25,5 +25,10 @@
 		/// Optional serializer for property to string and vise versa
 		/// </summary>
 		public string? Serializer { get; set; } = null;
+
+		/// <summary>
+		/// If a property needs to get its result (such as a list) from another table than the current one filling from, set the index here.
+		/// </summary>
+		public int FillTable { get; set; } = -1;
 	}
 }

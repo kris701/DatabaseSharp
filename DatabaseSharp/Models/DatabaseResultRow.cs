@@ -24,20 +24,19 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T Fill<T>() where T : class, new()
+		public T Fill<T>(DatabaseResult? source = null) where T : class, new()
 		{
 			var instance = new T();
 			if (instance == null)
 				throw new Exception("Could not create an empty instance of the class!");
-			return Fill(instance.GetType());
+			return Fill(instance.GetType(), source);
 		}
 
 		/// <summary>
 		/// Attempt to deserialize the row into a class object
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public dynamic Fill(Type asType)
+		public dynamic Fill(Type asType, DatabaseResult? source = null)
 		{
 			var instance = Activator.CreateInstance(asType);
 			if (instance == null)
@@ -56,13 +55,37 @@ namespace DatabaseSharp.Models
 				{
 					if (overrideAttribute.ColumnName != null)
 						columnName = overrideAttribute.ColumnName;
+					if (overrideAttribute.FillTable != -1)
+					{
+						if (source == null)
+							throw new Exception("Cannot use a fill table reference with no source table!");
+						if (prop.PropertyType.GenericTypeArguments.Length == 0)
+							throw new Exception("Expected FillTable property to be a list!");
+
+						var argProp = prop.PropertyType.GenericTypeArguments[0];
+						if (argProp.IsPrimitive ||
+							argProp == typeof(string) ||
+							argProp == typeof(DateTime) ||
+							argProp == typeof(TimeSpan) ||
+							argProp == typeof(Guid))
+						{
+							var argUnderlying = Nullable.GetUnderlyingType(argProp);
+							if (argUnderlying != null)
+								prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValuesOrNull(argUnderlying, columnName));
+							else
+								prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValues(argProp, columnName));
+						}
+						else
+							prop.SetValue(instance, source[overrideAttribute.FillTable].FillAll(argProp));
+						continue;
+					}
 
 					if (overrideAttribute.Serializer != null)
 					{
 						if (underlying != null)
 						{
 							var serializer = Serializers[overrideAttribute.Serializer];
-							var value = GetValueOrNull(columnName, typeof(string));
+							var value = GetValueOrNull(typeof(string), columnName);
 							if (value == null)
 								prop.SetValue(instance, null);
 							else
@@ -72,7 +95,7 @@ namespace DatabaseSharp.Models
 						else
 						{
 							var serializer = Serializers[overrideAttribute.Serializer];
-							var value = GetValueOrNull(columnName, typeof(string));
+							var value = GetValueOrNull(typeof(string), columnName);
 							if (value == null)
 								prop.SetValue(instance, null);
 							else
@@ -82,9 +105,9 @@ namespace DatabaseSharp.Models
 					}
 				}
 				if (underlying != null)
-					prop.SetValue(instance, GetValueOrNull(columnName, underlying));
+					prop.SetValue(instance, GetValueOrNull(underlying, columnName));
 				else
-					prop.SetValue(instance, GetValue(columnName, prop.PropertyType));
+					prop.SetValue(instance, GetValue(prop.PropertyType, columnName));
 			}
 
 			return instance;
@@ -98,15 +121,15 @@ namespace DatabaseSharp.Models
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
 		/// <exception cref="ArgumentNullException"></exception>
-		public T GetValue<T>(string columnName) where T : IConvertible => GetValue(columnName, typeof(T));
+		public T GetValue<T>(string columnName) where T : IConvertible => GetValue(typeof(T), columnName);
 
-		private dynamic GetValue(string columnName, Type type)
+		public dynamic GetValue(Type asType, string columnName)
 		{
 			object getObj = GetObjectValueFromDataTable(columnName);
 
 			if (getObj == null)
 				throw new ArgumentNullException("Result from the datatable is null!");
-			if (type == typeof(bool))
+			if (asType == typeof(bool))
 			{
 				if (getObj.ToString() == "1")
 					return true;
@@ -117,16 +140,16 @@ namespace DatabaseSharp.Models
 			{
 				// Simply always assume the data saved is in UTC time
 				dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-				if (type == typeof(DateTime))
+				if (asType == typeof(DateTime))
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
-			else if (type == typeof(TimeSpan))
+			else if (asType == typeof(TimeSpan))
 				return TimeSpan.Parse(getObj.ToString());
-			else if (type == typeof(Guid))
-				return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
+			else if (asType == typeof(Guid))
+				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
 
-			return Convert.ChangeType(getObj.ToString(), type, System.Globalization.CultureInfo.InvariantCulture);
+			return Convert.ChangeType(getObj.ToString(), asType, System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		/// <summary>
@@ -136,16 +159,16 @@ namespace DatabaseSharp.Models
 		/// <param name="columnName"></param>
 		/// <returns></returns>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public T? GetValueOrNull<T>(string columnName) where T : struct => GetValueOrNull(columnName, typeof(T));
+		public T? GetValueOrNull<T>(string columnName) where T : struct => GetValueOrNull(typeof(T), columnName);
 
-		private dynamic? GetValueOrNull(string columnName, Type type)
+		public dynamic? GetValueOrNull(Type asType, string columnName)
 		{
 			object getObj = GetObjectValueFromDataTable(columnName);
 
 			if (getObj == null || DBNull.Value.Equals(getObj))
 				return null;
 
-			if (type == typeof(bool))
+			if (asType == typeof(bool))
 			{
 				if (getObj.ToString() == "1")
 					return true;
@@ -156,16 +179,16 @@ namespace DatabaseSharp.Models
 			{
 				// Simply always assume the data saved is in UTC time
 				dateTime = DateTime.SpecifyKind(dateTime, DateTimeKind.Utc);
-				if (type == typeof(DateTime))
+				if (asType == typeof(DateTime))
 					return dateTime;
 				getObj = dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
 			}
-			else if (type == typeof(TimeSpan))
+			else if (asType == typeof(TimeSpan))
 				return TimeSpan.Parse(getObj.ToString());
-			else if (type == typeof(Guid))
-				return Convert.ChangeType(getObj, type, System.Globalization.CultureInfo.InvariantCulture);
+			else if (asType == typeof(Guid))
+				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
 
-			return Convert.ChangeType(getObj.ToString(), type, System.Globalization.CultureInfo.InvariantCulture);
+			return Convert.ChangeType(getObj.ToString(), asType, System.Globalization.CultureInfo.InvariantCulture);
 		}
 
 		private object GetObjectValueFromDataTable(string columnName)
