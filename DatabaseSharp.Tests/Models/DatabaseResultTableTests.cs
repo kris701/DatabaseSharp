@@ -164,5 +164,30 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual(filled[0].SomeValue, 123);
 			Assert.AreEqual(filled[1].SomeValue, 1241);
 		}
+
+		[TestMethod]
+		public void Can_FillAll2()
+		{
+			// ARRANGE
+			var tstID = Guid.NewGuid();
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("Count", typeof(int)));
+			table.Columns.Add(new DataColumn("Status", typeof(int)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField(table.Columns[0], 1);
+			table.Rows[0].SetField(table.Columns[1], 123);
+			table.Rows.Add(table.NewRow());
+			table.Rows[1].SetField(table.Columns[0], 2);
+			table.Rows[1].SetField(table.Columns[1], 1241);
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+			var filled = result[0].FillAll<TestClass10>();
+
+			// ASSERT
+			Assert.AreEqual(2, filled.Count);
+		}
 	}
 }

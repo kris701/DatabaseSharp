@@ -24,13 +24,7 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T Fill<T>(DatabaseResult? source = null) where T : class, new()
-		{
-			var instance = new T();
-			if (instance == null)
-				throw new Exception("Could not create an empty instance of the class!");
-			return Fill(instance.GetType(), source);
-		}
+		public T Fill<T>(DatabaseResult? source = null) where T : class, new() => Fill(typeof(T), source);
 
 		/// <summary>
 		/// Attempt to deserialize the row into a class object
