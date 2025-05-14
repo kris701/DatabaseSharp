@@ -63,45 +63,32 @@ namespace DatabaseSharp.Models
 							throw new Exception("Expected FillTable property to be a list!");
 
 						var argProp = prop.PropertyType.GenericTypeArguments[0];
-						if (argProp.IsPrimitive ||
-							argProp == typeof(string) ||
-							argProp == typeof(DateTime) ||
-							argProp == typeof(TimeSpan) ||
-							argProp == typeof(Guid))
-						{
-							var argUnderlying = Nullable.GetUnderlyingType(argProp);
-							if (argUnderlying != null)
-								prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValuesOrNull(argUnderlying, columnName));
-							else
-								prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValues(argProp, columnName));
-						}
+						var argUnderlying = Nullable.GetUnderlyingType(argProp);
+						if (overrideAttribute.Serializer != null)
+							prop.SetValue(instance, DeserializeItem(argProp, argUnderlying, overrideAttribute.Serializer, columnName));
 						else
-							prop.SetValue(instance, source[overrideAttribute.FillTable].FillAll(argProp));
+						{
+							if (argProp.IsPrimitive ||
+								argProp == typeof(string) ||
+								argProp == typeof(DateTime) ||
+								argProp == typeof(TimeSpan) ||
+								argProp == typeof(Guid))
+							{
+								if (argUnderlying != null)
+									prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValuesOrNull(argUnderlying, columnName));
+								else
+									prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValues(argProp, columnName));
+							}
+							else
+								prop.SetValue(instance, source[overrideAttribute.FillTable].FillAll(argProp));
+						}
 						continue;
 					}
 
 					if (overrideAttribute.Serializer != null)
 					{
-						if (underlying != null)
-						{
-							var serializer = Serializers[overrideAttribute.Serializer];
-							var value = GetValueOrNull(typeof(string), columnName);
-							if (value == null)
-								prop.SetValue(instance, null);
-							else
-								prop.SetValue(instance, serializer.Deserialise(value, underlying));
-							continue;
-						}
-						else
-						{
-							var serializer = Serializers[overrideAttribute.Serializer];
-							var value = GetValueOrNull(typeof(string), columnName);
-							if (value == null)
-								prop.SetValue(instance, null);
-							else
-								prop.SetValue(instance, serializer.Deserialise(value, prop.PropertyType));
-							continue;
-						}
+						prop.SetValue(instance, DeserializeItem(prop.PropertyType, underlying, overrideAttribute.Serializer, columnName));
+						continue;
 					}
 				}
 				if (underlying != null)
@@ -111,6 +98,28 @@ namespace DatabaseSharp.Models
 			}
 
 			return instance;
+		}
+
+		private dynamic? DeserializeItem(Type type, Type? underlyingType, string serializerName, string columnName)
+		{
+			if (underlyingType != null)
+			{
+				var serializer = Serializers[serializerName];
+				var value = GetValueOrNull(typeof(string), columnName);
+				if (value == null)
+					return null;
+				else
+					return serializer.Deserialise(value, underlyingType);
+			}
+			else
+			{
+				var serializer = Serializers[serializerName];
+				var value = GetValueOrNull(typeof(string), columnName);
+				if (value == null)
+					return null;
+				else
+					return serializer.Deserialise(value, type);
+			}
 		}
 
 		/// <summary>
