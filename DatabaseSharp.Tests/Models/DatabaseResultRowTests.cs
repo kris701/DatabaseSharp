@@ -230,6 +230,11 @@ namespace DatabaseSharp.Tests.Models
 			table2.Rows[0].SetField<string>(table2.Columns[2], "longer name");
 			table2.Rows[0].SetField<TimeSpan>(table2.Columns[3], TimeSpan.FromSeconds(10));
 			dataset.Tables.Add(table2);
+			var table3 = new DataTable();
+			table3.Columns.Add(new DataColumn("Value3", typeof(string)));
+			table3.Rows.Add(table3.NewRow());
+			table3.Rows[0].SetField<string>(table3.Columns[0], "test val");
+			dataset.Tables.Add(table3);
 			var result = new DatabaseResult(dataset);
 
 			// ACT
@@ -244,6 +249,7 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual("name", filled.Items[0].Name);
 			Assert.AreEqual("longer name", filled.Items[0].LongName);
 			Assert.AreEqual(TimeSpan.FromSeconds(10), filled.Items[0].Time);
+			Assert.AreEqual("test val", filled.Value3);
 		}
 	}
 }

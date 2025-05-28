@@ -53,28 +53,49 @@ namespace DatabaseSharp.Models
 					{
 						if (source == null)
 							throw new Exception("Cannot use a fill table reference with no source table!");
-						if (prop.PropertyType.GenericTypeArguments.Length == 0)
-							throw new Exception("Expected FillTable property to be a list!");
-
-						var argProp = prop.PropertyType.GenericTypeArguments[0];
-						var argUnderlying = Nullable.GetUnderlyingType(argProp);
-						if (overrideAttribute.Serializer != null)
-							prop.SetValue(instance, DeserializeItem(argProp, argUnderlying, overrideAttribute.Serializer, columnName));
+						if (prop.PropertyType.GenericTypeArguments.Length > 0)
+						{
+							var argProp = prop.PropertyType.GenericTypeArguments[0];
+							var argUnderlying = Nullable.GetUnderlyingType(argProp);
+							if (overrideAttribute.Serializer != null)
+								prop.SetValue(instance, DeserializeItem(argProp, argUnderlying, overrideAttribute.Serializer, columnName));
+							else
+							{
+								if (argProp.IsPrimitive ||
+									argProp == typeof(string) ||
+									argProp == typeof(DateTime) ||
+									argProp == typeof(TimeSpan) ||
+									argProp == typeof(Guid))
+								{
+									if (argUnderlying != null)
+										prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValuesOrNull(argUnderlying, columnName));
+									else
+										prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValues(argProp, columnName));
+								}
+								else
+									prop.SetValue(instance, source[overrideAttribute.FillTable].FillAll(argProp));
+							}
+						}
 						else
 						{
-							if (argProp.IsPrimitive ||
-								argProp == typeof(string) ||
-								argProp == typeof(DateTime) ||
-								argProp == typeof(TimeSpan) ||
-								argProp == typeof(Guid))
-							{
-								if (argUnderlying != null)
-									prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValuesOrNull(argUnderlying, columnName));
-								else
-									prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValues(argProp, columnName));
-							}
+							if (overrideAttribute.Serializer != null)
+								prop.SetValue(instance, DeserializeItem(prop.PropertyType, underlying, overrideAttribute.Serializer, columnName));
 							else
-								prop.SetValue(instance, source[overrideAttribute.FillTable].FillAll(argProp));
+							{
+								if (prop.PropertyType.IsPrimitive ||
+									prop.PropertyType == typeof(string) ||
+									prop.PropertyType == typeof(DateTime) ||
+									prop.PropertyType == typeof(TimeSpan) ||
+									prop.PropertyType == typeof(Guid))
+								{
+									if (underlying != null)
+										prop.SetValue(instance, source[overrideAttribute.FillTable][0].GetValueOrNull(underlying, columnName));
+									else
+										prop.SetValue(instance, source[overrideAttribute.FillTable][0].GetValue(prop.PropertyType, columnName));
+								}
+								else
+									prop.SetValue(instance, source[overrideAttribute.FillTable][0].Fill(prop.PropertyType));
+							}
 						}
 						continue;
 					}
