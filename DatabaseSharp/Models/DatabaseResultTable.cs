@@ -141,6 +141,12 @@ namespace DatabaseSharp.Models
 			return (IList)Activator.CreateInstance(genericListType);
 		}
 
+		/// <summary>
+		/// Simply return the data as a <seealso cref="DataTable"/> instance
+		/// </summary>
+		/// <returns></returns>
+		public DataTable ToDataTable() => _table;
+
 		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table, Serializers);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

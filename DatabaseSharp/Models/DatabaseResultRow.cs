@@ -221,5 +221,11 @@ namespace DatabaseSharp.Models
 				throw new Exception($"Table contains no column called '{columnName}'");
 			return _row[columnName];
 		}
+
+		/// <summary>
+		/// Simply return the data as a <seealso cref="DataRow"/> instance
+		/// </summary>
+		/// <returns></returns>
+		public DataRow ToDataTable() => _row;
 	}
 }

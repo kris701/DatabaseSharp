@@ -53,6 +53,12 @@ namespace DatabaseSharp.Models
 			Serializers = new Dictionary<string, IDatabaseSerializer>();
 		}
 
+		/// <summary>
+		/// Simply return the data as a <seealso cref="DataSet"/> instance
+		/// </summary>
+		/// <returns></returns>
+		public DataSet ToDataset() => _dataSet;
+
 		public IEnumerator<DatabaseResultTable> GetEnumerator() => new DatabaseResultEnumerator(_dataSet, Serializers);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
