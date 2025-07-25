@@ -72,11 +72,19 @@ namespace DatabaseSharp.Models
 				foreach (var prop in props)
 				{
 					var propName = prop.Name;
-					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
-						if (overrideName.ParameterName != null)
-							propName = overrideName.ParameterName;
+					var propType = GetActualType(prop.PropertyType);
+					if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrides)
+					{
+						if (overrides.ParameterName != null)
+							propName = overrides.ParameterName;
+						if (overrides.Serializer != null)
+						{
+							var serializer = serializers[overrides.Serializer];
+							propType = serializer.DatabaseType;
+						}
+					}
 
-					table.Columns.Add(propName, GetActualType(prop.PropertyType));
+					table.Columns.Add(propName, propType);
 				}
 
 				foreach (var value in Values)

@@ -211,13 +211,13 @@ namespace DatabaseSharp.Tests.Models
 			var dataset = new DataSet();
 			var table1 = new DataTable();
 			table1.Columns.Add(new DataColumn("Name", typeof(string)));
-			table1.Columns.Add(new DataColumn("Value", typeof(string)));
+			table1.Columns.Add(new DataColumn("Value", typeof(bool)));
 			table1.Rows.Add(table1.NewRow());
 			table1.Rows[0].SetField<string>(table1.Columns[0], "test name");
-			table1.Rows[0].SetField<string>(table1.Columns[1], "test");
+			table1.Rows[0].SetField<bool>(table1.Columns[1], true);
 			table1.Rows.Add(table1.NewRow());
 			table1.Rows[1].SetField<string>(table1.Columns[0], "test name 2");
-			table1.Rows[1].SetField<string>(table1.Columns[1], "test 2");
+			table1.Rows[1].SetField<bool>(table1.Columns[1], false);
 			dataset.Tables.Add(table1);
 			var table2 = new DataTable();
 			table2.Columns.Add(new DataColumn("ID", typeof(Guid)));
@@ -244,7 +244,7 @@ namespace DatabaseSharp.Tests.Models
 			var filled = row.Fill<TestClass9>(result);
 			Assert.IsNotNull(filled);
 			Assert.AreEqual("test name", filled.Name);
-			Assert.AreEqual("test", filled.Value);
+			Assert.AreEqual(true, filled.Value);
 			Assert.AreEqual(1, filled.Items.Count);
 			Assert.AreEqual("name", filled.Items[0].Name);
 			Assert.AreEqual("longer name", filled.Items[0].LongName);
