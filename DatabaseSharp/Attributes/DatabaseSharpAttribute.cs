@@ -1,6 +1,6 @@
 ﻿using DatabaseSharp.Serializers;
 
-namespace DatabaseSharp.Models
+namespace DatabaseSharp.Attributes
 {
 	/// <summary>
 	/// Attribute to override names for automatic database serialization and deserialization

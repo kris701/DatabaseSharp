@@ -1,4 +1,5 @@
-﻿using DatabaseSharp.Helpers;
+﻿using DatabaseSharp.Attributes;
+using DatabaseSharp.Helpers;
 using DatabaseSharp.Serializers;
 using System.Collections;
 using System.Data;
@@ -57,7 +58,7 @@ namespace DatabaseSharp.Models
 			else
 			{
 				var props = Values[0].GetType().GetProperties().ToList();
-				props.RemoveAll(prop => 
+				props.RemoveAll(prop =>
 					prop.GetCustomAttribute<DatabaseSharpIgnoreAttribute>() is DatabaseSharpIgnoreAttribute ignoreData &&
 					ignoreData.IgnoreAsParameter);
 				if (props.Count == 0)

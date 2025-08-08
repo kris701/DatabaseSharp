@@ -1,10 +1,9 @@
-﻿using DatabaseSharp.Helpers;
+﻿using DatabaseSharp.Attributes;
+using DatabaseSharp.Helpers;
 using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
 using DatabaseSharp.Tests.TestModels;
 using System.Data;
-using System.Data.SqlClient;
-using System.Text.Json;
 
 namespace DatabaseSharp.Tests.Serializers
 {
@@ -108,7 +107,8 @@ namespace DatabaseSharp.Tests.Serializers
 			var dataset = new DataSet();
 			var table = new DataTable();
 			table.Columns.Add(new DataColumn("EnumValues", typeof(int)));
-			for (int i = 0; i < values.Length; i++) {
+			for (int i = 0; i < values.Length; i++)
+			{
 				table.Rows.Add(table.NewRow());
 				table.Rows[i].SetField(table.Columns[0], values[i]);
 			}

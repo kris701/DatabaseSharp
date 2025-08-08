@@ -1,4 +1,5 @@
-﻿using DatabaseSharp.Serializers;
+﻿using DatabaseSharp.Attributes;
+using DatabaseSharp.Serializers;
 using System.Data;
 using System.Reflection;
 

@@ -1,11 +1,10 @@
-﻿using DatabaseSharp.Helpers;
+﻿using DatabaseSharp.Attributes;
+using DatabaseSharp.Helpers;
 using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
 using DatabaseSharp.Tests.TestModels;
 using System.Data;
-using System.Data.SqlClient;
 using System.Text.Json;
-using static DatabaseSharp.Tests.Serializers.DatabaseEnumSerializerTests;
 
 namespace DatabaseSharp.Tests.Serializers
 {

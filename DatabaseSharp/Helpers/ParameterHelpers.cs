@@ -1,17 +1,12 @@
-﻿using DatabaseSharp.Models;
+﻿using DatabaseSharp.Attributes;
+using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
-using System.Collections;
 using System.Reflection;
 
 namespace DatabaseSharp.Helpers
 {
 	public static class ParameterHelpers
 	{
-		/// <summary>
-		/// Automatically generate STP parameters based on a given object
-		/// </summary>
-		/// <param name="item"></param>
-		/// <returns></returns>
 		public static List<ISQLParameter>? GenerateParametersFromObject(object item, Dictionary<string, IDatabaseSerializer> serializers)
 		{
 			var parameters = new List<ISQLParameter>();

@@ -1,4 +1,4 @@
-﻿using DatabaseSharp.Models;
+﻿using DatabaseSharp.Attributes;
 
 namespace DatabaseSharp.Tests.TestModels
 {
@@ -8,6 +8,6 @@ namespace DatabaseSharp.Tests.TestModels
 		public string Name { get; set; } = "ad";
 		[DatabaseSharp(ParameterName = "even_longer_name")]
 		public string LongName { get; set; } = "asdasd";
-		public TimeSpan Time {  get; set; }
+		public TimeSpan Time { get; set; }
 	}
 }

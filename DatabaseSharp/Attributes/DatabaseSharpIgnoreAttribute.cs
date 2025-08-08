@@ -1,4 +1,4 @@
-﻿namespace DatabaseSharp.Models
+﻿namespace DatabaseSharp.Attributes
 {
 	/// <summary>
 	/// Attribute to ignore a property

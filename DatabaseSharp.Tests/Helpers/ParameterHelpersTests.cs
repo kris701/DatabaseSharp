@@ -15,7 +15,7 @@ namespace DatabaseSharp.Tests.Helpers
 
 			// ACT
 			var parameters = ParameterHelpers.GenerateParametersFromObject(
-				item, 
+				item,
 				new Dictionary<string, IDatabaseSerializer>()
 				{
 					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
@@ -41,10 +41,10 @@ namespace DatabaseSharp.Tests.Helpers
 
 			// ACT
 			var parameters = ParameterHelpers.GenerateParametersFromObject(
-				item, 
+				item,
 				new Dictionary<string, IDatabaseSerializer>() {
 					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
-					{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() } 
+					{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() }
 				});
 
 			// ASSERT
@@ -68,10 +68,10 @@ namespace DatabaseSharp.Tests.Helpers
 
 			// ACT
 			var parameters = ParameterHelpers.GenerateParametersFromObject(
-				item, 
+				item,
 				new Dictionary<string, IDatabaseSerializer>() {
 					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
-					{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() } 
+					{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() }
 				});
 
 			// ASSERT

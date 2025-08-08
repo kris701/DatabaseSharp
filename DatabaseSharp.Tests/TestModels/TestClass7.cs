@@ -1,4 +1,4 @@
-﻿using DatabaseSharp.Models;
+﻿using DatabaseSharp.Attributes;
 using DatabaseSharp.Serializers;
 
 namespace DatabaseSharp.Tests.TestModels
