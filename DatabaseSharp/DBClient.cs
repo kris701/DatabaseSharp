@@ -33,6 +33,7 @@ namespace DatabaseSharp
 			{
 				{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() },
 				{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() },
+				{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
 			};
 		}
 
@@ -69,7 +70,6 @@ namespace DatabaseSharp
 								{
 									var added = sqlCmd.Parameters.AddWithValue(s.Name, values);
 									added.SqlDbType = SqlDbType.Structured;
-									added.TypeName = p.DatabaseTypeName;
 								}
 								else
 									sqlCmd.Parameters.AddWithValue(s.Name, null);

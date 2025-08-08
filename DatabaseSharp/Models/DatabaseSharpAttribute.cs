@@ -1,4 +1,6 @@
-﻿namespace DatabaseSharp.Models
+﻿using DatabaseSharp.Serializers;
+
+namespace DatabaseSharp.Models
 {
 	/// <summary>
 	/// Attribute to override names for automatic database serialization and deserialization
@@ -17,14 +19,9 @@
 		public string? ColumnName { get; set; } = null;
 
 		/// <summary>
-		/// Optional type name
-		/// </summary>
-		public string? TypeName { get; set; } = null;
-
-		/// <summary>
 		/// Optional serializer for property to string and vise versa
 		/// </summary>
-		public string? Serializer { get; set; } = null;
+		public string? Serializer { get; set; } = DatabaseDefaultSerializer.SerializerName;
 
 		/// <summary>
 		/// If a property needs to get its result (such as a list) from another table than the current one filling from, set the index here.

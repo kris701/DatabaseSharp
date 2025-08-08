@@ -1,5 +1,6 @@
 ﻿using DatabaseSharp.Helpers;
 using DatabaseSharp.Models;
+using DatabaseSharp.Serializers;
 using DatabaseSharp.Tests.TestModels;
 
 namespace DatabaseSharp.Tests.Models
@@ -19,11 +20,19 @@ namespace DatabaseSharp.Tests.Models
 					new Guid("1b31de58-9cd6-4c19-84dc-9e71aa8cc641")
 				}
 			};
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item,
+				new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
 
 			// ACT
-			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var table = listparam.CreateDataTable(new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 
 			// ASSERT
 			Assert.AreEqual(2, table.Rows.Count);
@@ -39,11 +48,19 @@ namespace DatabaseSharp.Tests.Models
 				{
 				}
 			};
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item,
+				new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
 
 			// ACT
-			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var table = listparam.CreateDataTable(new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 
 			// ASSERT
 			Assert.AreEqual(0, table.Rows.Count);
@@ -84,11 +101,19 @@ namespace DatabaseSharp.Tests.Models
 					}
 				}
 			};
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item,
+				new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
 
 			// ACT
-			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var table = listparam.CreateDataTable(new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 
 			// ASSERT
 			Assert.AreEqual(4, table.Rows.Count);
@@ -116,11 +141,19 @@ namespace DatabaseSharp.Tests.Models
 					}
 				}
 			};
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item,
+				new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
 
 			// ACT
-			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var table = listparam.CreateDataTable(new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 
 			// ASSERT
 			Assert.AreEqual(1, table.Rows.Count);
@@ -142,11 +175,19 @@ namespace DatabaseSharp.Tests.Models
 				{
 				}
 			};
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item,
+				new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 			var listparam = parameters.First(x => x is SQLListParam) as SQLListParam;
 
 			// ACT
-			var table = listparam.CreateDataTable(new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var table = listparam.CreateDataTable(new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 
 			// ASSERT
 			Assert.AreEqual(0, table.Rows.Count);

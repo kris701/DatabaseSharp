@@ -20,10 +20,6 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		public string TableColumnName { get; set; }
 		/// <summary>
-		/// Name of the type to send it as
-		/// </summary>
-		public string DatabaseTypeName { get; set; }
-		/// <summary>
 		/// Value of the parameter
 		/// </summary>
 		public IList Values { get; set; }
@@ -34,13 +30,11 @@ namespace DatabaseSharp.Models
 		/// <param name="name"></param>
 		/// <param name="values"></param>
 		/// <param name="tableColumnName"></param>
-		/// <param name="databaseTypeName"></param>
-		public SQLListParam(string name, IList values, string tableColumnName = "", string databaseTypeName = "")
+		public SQLListParam(string name, IList values, string tableColumnName = "")
 		{
 			Name = name;
 			Values = values;
 			TableColumnName = tableColumnName;
-			DatabaseTypeName = databaseTypeName;
 		}
 
 		/// <summary>
@@ -80,7 +74,8 @@ namespace DatabaseSharp.Models
 						if (overrides.Serializer != null)
 						{
 							var serializer = serializers[overrides.Serializer];
-							propType = serializer.DatabaseType;
+							if (serializer.OverrideDatabaseType != null)
+								propType = serializer.OverrideDatabaseType;
 						}
 					}
 

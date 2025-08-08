@@ -197,7 +197,7 @@ namespace DatabaseSharp.Tests.Models
 
 			// ASSERT
 			var row = result[0][0];
-			var filled = row.Fill<TestClass8>(result);
+			var filled = row.Fill<TestClass8>();
 			Assert.IsNotNull(filled);
 			Assert.AreEqual("test name", filled.Name);
 			Assert.AreEqual("test", filled.Value);
@@ -241,7 +241,7 @@ namespace DatabaseSharp.Tests.Models
 
 			// ASSERT
 			var row = result[0][0];
-			var filled = row.Fill<TestClass9>(result);
+			var filled = row.Fill<TestClass9>();
 			Assert.IsNotNull(filled);
 			Assert.AreEqual("test name", filled.Name);
 			Assert.AreEqual(true, filled.Value);

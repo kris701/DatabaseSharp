@@ -27,18 +27,21 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public DatabaseResultRow this[int index] => new DatabaseResultRow(_table.Rows[index], Serializers);
+		public DatabaseResultRow this[int index] => new DatabaseResultRow(_table.Rows[index], _parent, Serializers);
 
 		private readonly DataTable _table;
+		private readonly DatabaseResult _parent;
 
 		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="table"></param>
+		/// <param name="parent"></param>
 		/// <param name="serializers"></param>
-		public DatabaseResultTable(DataTable table, Dictionary<string, IDatabaseSerializer> serializers)
+		public DatabaseResultTable(DataTable table, DatabaseResult parent, Dictionary<string, IDatabaseSerializer> serializers)
 		{
 			_table = table;
+			_parent = parent;
 			Serializers = serializers;
 			Columns = new List<string>();
 			foreach (DataColumn col in _table.Columns)
@@ -61,11 +64,11 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public List<T> FillAll<T>(DatabaseResult? source = null) where T : class, new()
+		public List<T> FillAll<T>() where T : class, new()
 		{
 			var result = new List<T>();
 			foreach (var row in this)
-				result.Add(row.Fill<T>(source));
+				result.Add(row.Fill<T>());
 			return result;
 		}
 
@@ -73,11 +76,11 @@ namespace DatabaseSharp.Models
 		/// Create a list of all the rows in the table
 		/// </summary>
 		/// <returns></returns>
-		public IList FillAll(Type asType, DatabaseResult? source = null)
+		public IList FillAll(Type asType)
 		{
 			var result = CreateList(asType);
 			foreach (var row in this)
-				result.Add(row.Fill(asType, source));
+				result.Add(row.Fill(asType));
 			return result;
 		}
 
@@ -147,26 +150,28 @@ namespace DatabaseSharp.Models
 		/// <returns></returns>
 		public DataTable ToDataTable() => _table;
 
-		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table, Serializers);
+		public IEnumerator<DatabaseResultRow> GetEnumerator() => new DatabaseResultTableEnumerator(_table, _parent, Serializers);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal class DatabaseResultTableEnumerator : IEnumerator<DatabaseResultRow>
 		{
 			private readonly DataTable _table;
+			private readonly DatabaseResult _parent;
 			private int _index;
 			private readonly Dictionary<string, IDatabaseSerializer> _serializers;
 
-			public DatabaseResultTableEnumerator(DataTable table, Dictionary<string, IDatabaseSerializer> serializers)
+			public DatabaseResultTableEnumerator(DataTable table, DatabaseResult parent, Dictionary<string, IDatabaseSerializer> serializers)
 			{
 				_table = table;
+				_parent = parent;
 				_index = -1;
 				_serializers = serializers;
 			}
 
-			public DatabaseResultRow Current => new DatabaseResultRow(_table.Rows[_index], _serializers);
+			public DatabaseResultRow Current => new DatabaseResultRow(_table.Rows[_index], _parent, _serializers);
 
-			object IEnumerator.Current => new DatabaseResultRow(_table.Rows[_index], _serializers);
+			object IEnumerator.Current => new DatabaseResultRow(_table.Rows[_index], _parent, _serializers);
 
 			public void Dispose()
 			{

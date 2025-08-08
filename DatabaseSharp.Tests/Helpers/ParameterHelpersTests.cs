@@ -14,7 +14,12 @@ namespace DatabaseSharp.Tests.Helpers
 			var item = new TestClass();
 
 			// ACT
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>());
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item, 
+				new Dictionary<string, IDatabaseSerializer>()
+				{
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
+				});
 
 			// ASSERT
 			Assert.IsNotNull(parameters);
@@ -35,7 +40,12 @@ namespace DatabaseSharp.Tests.Helpers
 			};
 
 			// ACT
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>() { { DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() } });
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item, 
+				new Dictionary<string, IDatabaseSerializer>() {
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
+					{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() } 
+				});
 
 			// ASSERT
 			Assert.IsNotNull(parameters);
@@ -57,7 +67,12 @@ namespace DatabaseSharp.Tests.Helpers
 			};
 
 			// ACT
-			var parameters = ParameterHelpers.GenerateParametersFromObject(item, new Dictionary<string, DatabaseSharp.Serializers.IDatabaseSerializer>() { { DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() } });
+			var parameters = ParameterHelpers.GenerateParametersFromObject(
+				item, 
+				new Dictionary<string, IDatabaseSerializer>() {
+					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
+					{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() } 
+				});
 
 			// ASSERT
 			Assert.IsNotNull(parameters);

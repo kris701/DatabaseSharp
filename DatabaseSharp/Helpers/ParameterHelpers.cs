@@ -37,33 +37,14 @@ namespace DatabaseSharp.Helpers
 				if (ignoreData.IgnoreAsParameter)
 					return null;
 
-			var value = prop.GetValue(item);
-
-			var typeName = "";
-			var columnName = "";
-			var parameterName = prop.Name;
-			if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideName)
+			var serializerName = DatabaseDefaultSerializer.SerializerName;
+			if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute attr)
 			{
-				if (overrideName.ParameterName != null)
-					parameterName = overrideName.ParameterName;
-				if (overrideName.TypeName != null)
-					typeName = overrideName.TypeName;
-				if (overrideName.ColumnName != null)
-					columnName = overrideName.ColumnName;
-				if (overrideName.Serializer != null)
-				{
-					if (value != null)
-					{
-						var serializer = serializers[overrideName.Serializer];
-						value = serializer.Serialize(value, prop.PropertyType);
-					}
-				}
+				if (attr.Serializer != null)
+					serializerName = attr.Serializer;
 			}
-
-			if (value is IList lst)
-				return new SQLListParam(parameterName, lst, columnName, typeName);
-			else
-				return new SQLParam(parameterName, value);
+			var serializer = serializers[serializerName];
+			return serializer.Serialize(item, prop);
 		}
 	}
 }

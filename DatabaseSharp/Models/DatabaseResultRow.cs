@@ -12,10 +12,12 @@ namespace DatabaseSharp.Models
 		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
 
 		private readonly DataRow _row;
+		private readonly DatabaseResult _parent;
 
-		public DatabaseResultRow(DataRow row, Dictionary<string, IDatabaseSerializer> serializers)
+		public DatabaseResultRow(DataRow row, DatabaseResult parent, Dictionary<string, IDatabaseSerializer> serializers)
 		{
 			_row = row;
+			_parent = parent;
 			Serializers = serializers;
 		}
 
@@ -24,13 +26,13 @@ namespace DatabaseSharp.Models
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public T Fill<T>(DatabaseResult? source = null) where T : class, new() => Fill(typeof(T), source);
+		public T Fill<T>() where T : class, new() => Fill(typeof(T));
 
 		/// <summary>
 		/// Attempt to deserialize the row into a class object
 		/// </summary>
 		/// <returns></returns>
-		public dynamic Fill(Type asType, DatabaseResult? source = null)
+		public dynamic Fill(Type asType)
 		{
 			var instance = Activator.CreateInstance(asType);
 			if (instance == null)
@@ -43,98 +45,17 @@ namespace DatabaseSharp.Models
 					if (ignoreData.IgnoreAsFill)
 						continue;
 
-				var columnName = prop.Name;
-				var underlying = Nullable.GetUnderlyingType(prop.PropertyType);
+				var serializerName = DatabaseDefaultSerializer.SerializerName;
 				if (prop.GetCustomAttribute<DatabaseSharpAttribute>() is DatabaseSharpAttribute overrideAttribute)
 				{
-					if (overrideAttribute.ColumnName != null)
-						columnName = overrideAttribute.ColumnName;
-					if (overrideAttribute.FillTable != -1)
-					{
-						if (source == null)
-							throw new Exception("Cannot use a fill table reference with no source table!");
-						if (prop.PropertyType.GenericTypeArguments.Length > 0)
-						{
-							var argProp = prop.PropertyType.GenericTypeArguments[0];
-							var argUnderlying = Nullable.GetUnderlyingType(argProp);
-							if (overrideAttribute.Serializer != null)
-								prop.SetValue(instance, DeserializeItem(argProp, argUnderlying, overrideAttribute.Serializer, columnName));
-							else
-							{
-								if (argProp.IsPrimitive ||
-									argProp == typeof(string) ||
-									argProp == typeof(DateTime) ||
-									argProp == typeof(TimeSpan) ||
-									argProp == typeof(Guid))
-								{
-									if (argUnderlying != null)
-										prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValuesOrNull(argUnderlying, columnName));
-									else
-										prop.SetValue(instance, source[overrideAttribute.FillTable].GetAllValues(argProp, columnName));
-								}
-								else
-									prop.SetValue(instance, source[overrideAttribute.FillTable].FillAll(argProp));
-							}
-						}
-						else
-						{
-							if (overrideAttribute.Serializer != null)
-								prop.SetValue(instance, DeserializeItem(prop.PropertyType, underlying, overrideAttribute.Serializer, columnName));
-							else
-							{
-								if (prop.PropertyType.IsPrimitive ||
-									prop.PropertyType == typeof(string) ||
-									prop.PropertyType == typeof(DateTime) ||
-									prop.PropertyType == typeof(TimeSpan) ||
-									prop.PropertyType == typeof(Guid))
-								{
-									if (underlying != null)
-										prop.SetValue(instance, source[overrideAttribute.FillTable][0].GetValueOrNull(underlying, columnName));
-									else
-										prop.SetValue(instance, source[overrideAttribute.FillTable][0].GetValue(prop.PropertyType, columnName));
-								}
-								else
-									prop.SetValue(instance, source[overrideAttribute.FillTable][0].Fill(prop.PropertyType));
-							}
-						}
-						continue;
-					}
-
 					if (overrideAttribute.Serializer != null)
-					{
-						prop.SetValue(instance, DeserializeItem(prop.PropertyType, underlying, overrideAttribute.Serializer, columnName));
-						continue;
-					}
+						serializerName = overrideAttribute.Serializer;
 				}
-				if (underlying != null)
-					prop.SetValue(instance, GetValueOrNull(underlying, columnName));
-				else
-					prop.SetValue(instance, GetValue(prop.PropertyType, columnName));
+				var serializer = Serializers[serializerName];
+				prop.SetValue(instance, serializer.Deserialise(prop, this, _parent));
 			}
 
 			return instance;
-		}
-
-		private dynamic? DeserializeItem(Type type, Type? underlyingType, string serializerName, string columnName)
-		{
-			if (underlyingType != null)
-			{
-				var serializer = Serializers[serializerName];
-				var value = GetValueOrNull(typeof(string), columnName);
-				if (value == null)
-					return null;
-				else
-					return serializer.Deserialise(value, underlyingType);
-			}
-			else
-			{
-				var serializer = Serializers[serializerName];
-				var value = GetValueOrNull(typeof(string), columnName);
-				if (value == null)
-					return null;
-				else
-					return serializer.Deserialise(value, type);
-			}
 		}
 
 		/// <summary>

@@ -9,11 +9,6 @@ namespace DatabaseSharp.Models
 	public interface IListHandler
 	{
 		/// <summary>
-		/// Name of the type to send it as
-		/// </summary>
-		public string DatabaseTypeName { get; set; }
-
-		/// <summary>
 		/// Generate a datatable from this object
 		/// </summary>
 		/// <returns></returns>
