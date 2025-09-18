@@ -34,7 +34,10 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		public Func<DatabaseResult, TIn, Task<List<TOut>>>? FillOverride = null;
 
-		internal readonly IDBClient _dbClient = client;
+		/// <summary>
+		/// Database client interface in use
+		/// </summary>
+		public IDBClient Client { get; } = client;
 
 		/// <summary>
 		/// Execute the STP
@@ -45,7 +48,7 @@ namespace DatabaseSharp.Tools
 		{
 			if (PreExecute != null)
 				await PreExecute(input);
-			var result = await _dbClient.ExecuteAsync(TargetSTP, input);
+			var result = await Client.ExecuteAsync(TargetSTP, input);
 			if (typeof(TOut) == typeof(TEmpty))
 			{
 				if (PostExecute != null)

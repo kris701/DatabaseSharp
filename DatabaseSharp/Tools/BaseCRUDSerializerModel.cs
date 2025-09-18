@@ -33,7 +33,10 @@ namespace DatabaseSharp.Tools
 		where TDelete : class, new()
 		where TEmpty : class, new()
 	{
-		internal readonly IDBClient _dbClient = dbClient;
+		/// <summary>
+		/// Database client interface in use
+		/// </summary>
+		public IDBClient Client { get; } = dbClient;
 
 		/// <summary>
 		/// Name of the add STP
@@ -162,7 +165,7 @@ namespace DatabaseSharp.Tools
 		{
 			if (preExecute != null)
 				await preExecute(input);
-			var result = await _dbClient.ExecuteAsync(stp, input);
+			var result = await Client.ExecuteAsync(stp, input);
 			if (typeof(TOut) == typeof(TEmpty))
 			{
 				if (postExecute != null)
@@ -200,7 +203,7 @@ namespace DatabaseSharp.Tools
 		{
 			if (preExecute != null)
 				await preExecute(input);
-			var result = await _dbClient.ExecuteAsync(stp, input);
+			var result = await Client.ExecuteAsync(stp, input);
 			if (typeof(TOut) == typeof(TEmpty))
 			{
 				if (postExecute != null)
