@@ -34,7 +34,7 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		public Func<DatabaseResult, TIn, Task<List<TOut>>>? FillOverride = null;
 
-		private readonly IDBClient _dbClient = client;
+		internal readonly IDBClient _dbClient = client;
 
 		/// <summary>
 		/// Execute the STP

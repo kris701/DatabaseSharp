@@ -33,7 +33,7 @@ namespace DatabaseSharp.Tools
 		where TDelete : class, new()
 		where TEmpty : class, new()
 	{
-		private readonly IDBClient _dbClient = dbClient;
+		internal readonly IDBClient _dbClient = dbClient;
 
 		/// <summary>
 		/// Name of the add STP
