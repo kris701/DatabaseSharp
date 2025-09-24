@@ -1,4 +1,5 @@
 ﻿using DatabaseSharp.Models;
+using System.Reflection;
 
 namespace DatabaseSharp.Tools
 {
@@ -173,9 +174,17 @@ namespace DatabaseSharp.Tools
 				return new();
 			}
 			if (result.Count == 0)
+			{
+				if (postExecute != null)
+					await postExecute(input, new());
 				return new();
+			}
 			if (result[0].Count == 0)
+			{
+				if (postExecute != null)
+					await postExecute(input, new());
 				return new();
+			}
 			if (fillOverride != null)
 			{
 				var model = await fillOverride(result, input);
@@ -211,9 +220,17 @@ namespace DatabaseSharp.Tools
 				return new();
 			}
 			if (result.Count == 0)
-				return new();
+			{
+				if (postExecute != null)
+					await postExecute(input, new());
+				return new(); 
+			}
 			if (result[0].Count == 0)
+			{
+				if (postExecute != null)
+					await postExecute(input, new());
 				return new();
+			}
 			if (fillOverride != null)
 			{
 				var model = await fillOverride(result, input);
