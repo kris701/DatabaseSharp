@@ -23,11 +23,11 @@ namespace DatabaseSharp.Tools
 		/// <summary>
 		/// Additional action to run before communicating with the database
 		/// </summary>
-		public Func<TIn, Task>? PreExecute = null;
+		public Func<TIn, Task<TIn>>? PreExecute = null;
 		/// <summary>
 		/// Additional action to run after communicating with the database
 		/// </summary>
-		public Func<TIn, List<TOut>, Task>? PostExecute = null;
+		public Func<TIn, List<TOut>, Task<List<TOut>>>? PostExecute = null;
 		/// <summary>
 		/// Override for how to use the Fill deserialization method.
 		/// If none given, the default DatabaseSharp one is used.
@@ -52,25 +52,33 @@ namespace DatabaseSharp.Tools
 			if (typeof(TOut) == typeof(TEmpty))
 			{
 				if (PostExecute != null)
-					await PostExecute(input, new());
+					return await PostExecute(input, new());
 				return new();
 			}
 			if (result.Count == 0)
+			{
+				if (PostExecute != null)
+					return await PostExecute(input, new());
 				return new();
+			}
 			if (result[0].Count == 0)
+			{
+				if (PostExecute != null)
+					return await PostExecute(input, new());
 				return new();
+			}
 			if (FillOverride != null)
 			{
 				var model = await FillOverride(result, input);
 				if (PostExecute != null)
-					await PostExecute(input, model);
+					return await PostExecute(input, model);
 				return model;
 			}
 			else
 			{
 				var model = result[0].FillAll<TOut>();
 				if (PostExecute != null)
-					await PostExecute(input, model);
+					return await PostExecute(input, model);
 				return model;
 			}
 		}

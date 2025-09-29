@@ -63,11 +63,11 @@ namespace DatabaseSharp.Tools
 		/// <summary>
 		/// Additional action to run before communicating with the database
 		/// </summary>
-		public Func<TAdd, Task>? AddPreExecute = null;
+		public Func<TAdd, Task<TAdd>>? AddPreExecute = null;
 		/// <summary>
 		/// Additional action to run after communicating with the database
 		/// </summary>
-		public Func<TAdd, TModel, Task>? AddPostExecute = null;
+		public Func<TAdd, TModel, Task<TModel>>? AddPostExecute = null;
 		/// <summary>
 		/// Override for how to use the Fill deserialization method.
 		/// If none given, the default DatabaseSharp one is used.
@@ -83,11 +83,11 @@ namespace DatabaseSharp.Tools
 		/// <summary>
 		/// Additional action to run before communicating with the database
 		/// </summary>
-		public Func<TModel, Task>? UpdatePreExecute = null;
+		public Func<TModel, Task<TModel>>? UpdatePreExecute = null;
 		/// <summary>
 		/// Additional action to run after communicating with the database
 		/// </summary>
-		public Func<TModel, TModel, Task>? UpdatePostExecute = null;
+		public Func<TModel, TModel, Task<TModel>>? UpdatePostExecute = null;
 		/// <summary>
 		/// Override for how to use the Fill deserialization method.
 		/// If none given, the default DatabaseSharp one is used.
@@ -103,11 +103,11 @@ namespace DatabaseSharp.Tools
 		/// <summary>
 		/// Additional action to run before communicating with the database
 		/// </summary>
-		public Func<TGetModel, Task>? GetPreExecute = null;
+		public Func<TGetModel, Task<TGetModel>>? GetPreExecute = null;
 		/// <summary>
 		/// Additional action to run after communicating with the database
 		/// </summary>
-		public Func<TGetModel, TModel, Task>? GetPostExecute = null;
+		public Func<TGetModel, TModel, Task<TModel>>? GetPostExecute = null;
 		/// <summary>
 		/// Override for how to use the Fill deserialization method.
 		/// If none given, the default DatabaseSharp one is used.
@@ -123,11 +123,11 @@ namespace DatabaseSharp.Tools
 		/// <summary>
 		/// Additional action to run before communicating with the database
 		/// </summary>
-		public Func<TGetAllModel, Task>? GetAllPreExecute = null;
+		public Func<TGetAllModel, Task<TGetAllModel>>? GetAllPreExecute = null;
 		/// <summary>
 		/// Additional action to run after communicating with the database
 		/// </summary>
-		public Func<TGetAllModel, List<TListModel>, Task>? GetAllPostExecute = null;
+		public Func<TGetAllModel, List<TListModel>, Task<List<TListModel>>>? GetAllPostExecute = null;
 		/// <summary>
 		/// Override for how to use the Fill deserialization method.
 		/// If none given, the default DatabaseSharp one is used.
@@ -143,11 +143,11 @@ namespace DatabaseSharp.Tools
 		/// <summary>
 		/// Additional action to run before communicating with the database
 		/// </summary>
-		public Func<TDelete, Task>? DeletePreExecute = null;
+		public Func<TDelete, Task<TDelete>>? DeletePreExecute = null;
 		/// <summary>
 		/// Additional action to run after communicating with the database
 		/// </summary>
-		public Func<TDelete, TEmpty, Task>? DeletePostExecute = null;
+		public Func<TDelete, TEmpty, Task<TEmpty>>? DeletePostExecute = null;
 		/// <summary>
 		/// Method to execute the Delete STP
 		/// </summary>
@@ -158,8 +158,8 @@ namespace DatabaseSharp.Tools
 		private async Task<TOut> ExecuteSingleAsync<TIn, TOut>(
 			TIn input,
 			string stp,
-			Func<TIn, Task>? preExecute = null,
-			Func<TIn, TOut, Task>? postExecute = null,
+			Func<TIn, Task<TIn>>? preExecute = null,
+			Func<TIn, TOut, Task<TOut>>? postExecute = null,
 			Func<DatabaseResult, TIn, Task<TOut>>? fillOverride = null)
 			where TIn : class, new()
 			where TOut : class, new()
@@ -170,33 +170,33 @@ namespace DatabaseSharp.Tools
 			if (typeof(TOut) == typeof(TEmpty))
 			{
 				if (postExecute != null)
-					await postExecute(input, new());
+					return await postExecute(input, new());
 				return new();
 			}
 			if (result.Count == 0)
 			{
 				if (postExecute != null)
-					await postExecute(input, new());
+					return await postExecute(input, new());
 				return new();
 			}
 			if (result[0].Count == 0)
 			{
 				if (postExecute != null)
-					await postExecute(input, new());
+					return await postExecute(input, new());
 				return new();
 			}
 			if (fillOverride != null)
 			{
 				var model = await fillOverride(result, input);
 				if (postExecute != null)
-					await postExecute(input, model);
+					model = await postExecute(input, model);
 				return model;
 			}
 			else
 			{
 				var model = result[0][0].Fill<TOut>();
 				if (postExecute != null)
-					await postExecute(input, model);
+					model = await postExecute(input, model);
 				return model;
 			}
 		}
@@ -204,8 +204,8 @@ namespace DatabaseSharp.Tools
 		private async Task<List<TOut>> ExecuteListAsync<TIn, TOut>(
 			TIn input,
 			string stp,
-			Func<TIn, Task>? preExecute = null,
-			Func<TIn, List<TOut>, Task>? postExecute = null,
+			Func<TIn, Task<TIn>>? preExecute = null,
+			Func<TIn, List<TOut>, Task<List<TOut>>>? postExecute = null,
 			Func<DatabaseResult, TIn, Task<List<TOut>>>? fillOverride = null)
 			where TIn : class, new()
 			where TOut : class, new()
@@ -216,33 +216,33 @@ namespace DatabaseSharp.Tools
 			if (typeof(TOut) == typeof(TEmpty))
 			{
 				if (postExecute != null)
-					await postExecute(input, new());
+					return await postExecute(input, new());
 				return new();
 			}
 			if (result.Count == 0)
 			{
 				if (postExecute != null)
-					await postExecute(input, new());
+					return await postExecute(input, new());
 				return new(); 
 			}
 			if (result[0].Count == 0)
 			{
 				if (postExecute != null)
-					await postExecute(input, new());
+					return await postExecute(input, new());
 				return new();
 			}
 			if (fillOverride != null)
 			{
 				var model = await fillOverride(result, input);
 				if (postExecute != null)
-					await postExecute(input, model);
+					model = await postExecute(input, model);
 				return model;
 			}
 			else
 			{
 				var model = result[0].FillAll<TOut>();
 				if (postExecute != null)
-					await postExecute(input, model);
+					model = await postExecute(input, model);
 				return model;
 			}
 		}
