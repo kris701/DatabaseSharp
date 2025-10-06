@@ -1,8 +1,8 @@
 ﻿using DatabaseSharp.Helpers;
 using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
+using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
 
 namespace DatabaseSharp
@@ -46,9 +46,9 @@ namespace DatabaseSharp
 		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
-			using (SqlConnection sqlConn = new SqlConnection(ConnectionString))
+			using (var sqlConn = new SqlConnection(ConnectionString))
 			{
-				using (SqlCommand sqlCmd = new SqlCommand(procedureName, sqlConn))
+				using (var sqlCmd = new SqlCommand(procedureName, sqlConn))
 				{
 					sqlCmd.CommandTimeout = sqlConn.ConnectionTimeout;
 					sqlCmd.CommandType = CommandType.StoredProcedure;
@@ -79,7 +79,7 @@ namespace DatabaseSharp
 						}
 					}
 					await sqlConn.OpenAsync();
-					using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(sqlCmd))
+					using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
 					{
 						await Task.Run(() => sqlAdapter.Fill(dt));
 					}
