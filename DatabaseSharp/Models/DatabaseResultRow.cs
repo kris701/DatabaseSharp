@@ -94,6 +94,8 @@ namespace DatabaseSharp.Models
 				return TimeSpan.Parse(getObj.ToString());
 			else if (asType == typeof(Guid))
 				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
+			else if (asType == typeof(double))
+				return double.Parse(getObj.ToString());
 
 			return Convert.ChangeType(getObj.ToString(), asType, System.Globalization.CultureInfo.InvariantCulture);
 		}
@@ -133,6 +135,8 @@ namespace DatabaseSharp.Models
 				return TimeSpan.Parse(getObj.ToString());
 			else if (asType == typeof(Guid))
 				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
+			else if (asType == typeof(double))
+				return double.Parse(getObj.ToString());
 
 			return Convert.ChangeType(getObj.ToString(), asType, System.Globalization.CultureInfo.InvariantCulture);
 		}
