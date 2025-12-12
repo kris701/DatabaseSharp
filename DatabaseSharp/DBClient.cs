@@ -33,6 +33,7 @@ namespace DatabaseSharp
 			{
 				{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() },
 				{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() },
+				{ DatabaseStrBoolSerializer.SerializerName, new DatabaseStrBoolSerializer() },
 				{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
 			};
 		}
