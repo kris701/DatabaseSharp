@@ -61,7 +61,9 @@ namespace DatabaseSharp
 							if (type == typeof(SQLParam))
 							{
 								var p = (SQLParam)s;
-								sqlCmd.Parameters.AddWithValue(s.Name, p.Value);
+								var added = sqlCmd.Parameters.AddWithValue(s.Name, p.Value);
+								if (p.Value is byte[])
+									added.SqlDbType = SqlDbType.VarBinary;
 							}
 							else if (type.IsAssignableTo(typeof(IListHandler)))
 							{
