@@ -3,6 +3,7 @@ using DatabaseSharp.Helpers;
 using DatabaseSharp.Serializers;
 using System.Collections;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Reflection;
 
 namespace DatabaseSharp.Models
@@ -80,7 +81,10 @@ namespace DatabaseSharp.Models
 						}
 					}
 
-					table.Columns.Add(propName, propType);
+					if (propType == typeof(byte[]))
+						table.Columns.Add(propName, typeof(SqlBinary));
+					else
+						table.Columns.Add(propName, propType);
 				}
 
 				foreach (var value in Values)

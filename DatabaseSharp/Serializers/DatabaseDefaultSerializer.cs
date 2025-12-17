@@ -26,7 +26,7 @@ namespace DatabaseSharp.Serializers
 					columnName = overrideAttribute.ColumnName;
 				if (overrideAttribute.FillTable != -1)
 				{
-					if (propInfo.PropertyType.GenericTypeArguments.Length > 0)
+					if (propInfo.PropertyType.GenericTypeArguments.Length > 0 && propInfo.PropertyType != typeof(byte[]))
 					{
 						var argProp = propInfo.PropertyType.GenericTypeArguments[0];
 						var argUnderlying = Nullable.GetUnderlyingType(argProp);
@@ -82,7 +82,7 @@ namespace DatabaseSharp.Serializers
 					columnName = overrideName.ColumnName;
 			}
 
-			if (value is IList lst)
+			if (value is IList lst && value is not byte[])
 				return new SQLListParam(parameterName, lst, columnName);
 			else
 				return new SQLParam(parameterName, value);
