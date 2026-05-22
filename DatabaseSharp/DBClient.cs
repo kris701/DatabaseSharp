@@ -99,5 +99,29 @@ namespace DatabaseSharp
 		/// <param name="item"></param>
 		/// <returns></returns>
 		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item) => await ExecuteAsync(procedureName, ParameterHelpers.GenerateParametersFromObject(item, Serializers));
+
+		/// <summary>
+		/// Execute some SQL query.
+		/// </summary>
+		/// <param name="freeSql"></param>
+		/// <returns></returns>
+		public async Task<DatabaseResult> ExecuteFreeAsync(string freeSql)
+		{
+			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
+			using (var sqlConn = new SqlConnection(ConnectionString))
+			{
+				using (var sqlCmd = new SqlCommand(freeSql, sqlConn))
+				{
+					sqlCmd.CommandTimeout = sqlConn.ConnectionTimeout;
+					sqlCmd.CommandType = CommandType.Text;
+					await sqlConn.OpenAsync();
+					using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+					{
+						await Task.Run(() => sqlAdapter.Fill(dt));
+					}
+				}
+			}
+			return new DatabaseResult(dt, Serializers);
+		}
 	}
 }

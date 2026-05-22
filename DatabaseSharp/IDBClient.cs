@@ -33,5 +33,12 @@ namespace DatabaseSharp
 		/// <param name="item"></param>
 		/// <returns></returns>
 		public Task<DatabaseResult> ExecuteAsync(string procedureName, object item);
+
+		/// <summary>
+		/// Execute some SQL query.
+		/// </summary>
+		/// <param name="freeSql"></param>
+		/// <returns></returns>
+		public Task<DatabaseResult> ExecuteFreeAsync(string freeSql);
 	}
 }
