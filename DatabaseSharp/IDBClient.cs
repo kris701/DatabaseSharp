@@ -23,22 +23,25 @@ namespace DatabaseSharp
 		/// </summary>
 		/// <param name="procedureName"></param>
 		/// <param name="parameters"></param>
+		/// <param name="token"></param>
 		/// <returns></returns>
-		public Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null);
+		public Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null, CancellationToken? token = null);
 
 		/// <summary>
 		/// Execute a STP with a object that will be turned into parameters
 		/// </summary>
 		/// <param name="procedureName"></param>
 		/// <param name="item"></param>
+		/// <param name="token"></param>
 		/// <returns></returns>
-		public Task<DatabaseResult> ExecuteAsync(string procedureName, object item);
+		public Task<DatabaseResult> ExecuteAsync(string procedureName, object item, CancellationToken? token = null);
 
 		/// <summary>
 		/// Execute some SQL query.
 		/// </summary>
 		/// <param name="freeSql"></param>
+		/// <param name="token"></param>
 		/// <returns></returns>
-		public Task<DatabaseResult> ExecuteFreeAsync(string freeSql);
+		public Task<DatabaseResult> ExecuteFreeAsync(string freeSql, CancellationToken? token = null);
 	}
 }

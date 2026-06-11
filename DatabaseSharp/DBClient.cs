@@ -44,8 +44,9 @@ namespace DatabaseSharp
 		/// </summary>
 		/// <param name="procedureName"></param>
 		/// <param name="parameters"></param>
+		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null)
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null, CancellationToken? token = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
 			using (var sqlConn = new SqlConnection(ConnectionString))
@@ -82,10 +83,26 @@ namespace DatabaseSharp
 								throw new Exception("Invalid SQL parameter!");
 						}
 					}
-					await sqlConn.OpenAsync();
-					using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+
+					if (token != null)
 					{
-						await Task.Run(() => sqlAdapter.Fill(dt));
+						await sqlConn.OpenAsync(token.Value);
+						if (token.Value.IsCancellationRequested)
+							return new DatabaseResult(new DataSet());
+						using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+						{
+							await Task.Run(() => sqlAdapter.Fill(dt), token.Value);
+						}
+						if (token.Value.IsCancellationRequested)
+							return new DatabaseResult(new DataSet());
+					}
+					else
+					{
+						await sqlConn.OpenAsync();
+						using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+						{
+							await Task.Run(() => sqlAdapter.Fill(dt));
+						}
 					}
 				}
 			}
@@ -97,15 +114,17 @@ namespace DatabaseSharp
 		/// </summary>
 		/// <param name="procedureName"></param>
 		/// <param name="item"></param>
+		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item) => await ExecuteAsync(procedureName, ParameterHelpers.GenerateParametersFromObject(item, Serializers));
+		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item, CancellationToken? token = null) => await ExecuteAsync(procedureName, ParameterHelpers.GenerateParametersFromObject(item, Serializers), token);
 
 		/// <summary>
 		/// Execute some SQL query.
 		/// </summary>
 		/// <param name="freeSql"></param>
+		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteFreeAsync(string freeSql)
+		public async Task<DatabaseResult> ExecuteFreeAsync(string freeSql, CancellationToken? token = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
 			using (var sqlConn = new SqlConnection(ConnectionString))
@@ -114,7 +133,14 @@ namespace DatabaseSharp
 				{
 					sqlCmd.CommandTimeout = sqlConn.ConnectionTimeout;
 					sqlCmd.CommandType = CommandType.Text;
-					await sqlConn.OpenAsync();
+					if (token != null)
+					{
+						await sqlConn.OpenAsync(token.Value);
+						if (token.Value.IsCancellationRequested)
+							return new DatabaseResult(new DataSet());
+					}
+					else
+						await sqlConn.OpenAsync();
 					using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
 					{
 						await Task.Run(() => sqlAdapter.Fill(dt));
