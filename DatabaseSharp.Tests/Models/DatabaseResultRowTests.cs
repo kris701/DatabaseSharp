@@ -250,5 +250,29 @@ namespace DatabaseSharp.Tests.Models
 			Assert.AreEqual(TimeSpan.FromSeconds(10), filled.Items[0].Time);
 			Assert.AreEqual("test val", filled.Value3);
 		}
+
+		[TestMethod]
+		public void Can_GetValue2()
+		{
+			// ARRANGE
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("col1", typeof(byte[])));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField(table.Columns[0], new byte[3] { 25, 1, 223 });
+			table.Rows.Add(table.NewRow());
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset);
+
+			// ACT
+
+			// ASSERT
+			var row = result[0][0];
+			var expected = new byte[3] { 25, 1, 223 };
+			var actual = row.GetValue(typeof(byte[]), "col1");
+			Assert.AreEqual(expected.Length, actual.Length);
+			for (int i = 0; i < expected.Length; i++)
+				Assert.AreEqual(expected[i], actual[i]);
+		}
 	}
 }

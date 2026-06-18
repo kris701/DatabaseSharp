@@ -96,6 +96,8 @@ namespace DatabaseSharp.Models
 				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
 			else if (asType == typeof(double))
 				return double.Parse(getObj.ToString());
+			else if (asType == typeof(byte[]))
+				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
 
 			return Convert.ChangeType(getObj.ToString(), asType, System.Globalization.CultureInfo.InvariantCulture);
 		}
@@ -137,6 +139,8 @@ namespace DatabaseSharp.Models
 				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
 			else if (asType == typeof(double))
 				return double.Parse(getObj.ToString());
+			else if (asType == typeof(byte[]))
+				return Convert.ChangeType(getObj, asType, System.Globalization.CultureInfo.InvariantCulture);
 
 			return Convert.ChangeType(getObj.ToString(), asType, System.Globalization.CultureInfo.InvariantCulture);
 		}
