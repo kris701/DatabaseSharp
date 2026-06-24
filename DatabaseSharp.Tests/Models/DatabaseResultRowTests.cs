@@ -258,8 +258,10 @@ namespace DatabaseSharp.Tests.Models
 			var dataset = new DataSet();
 			var table = new DataTable();
 			table.Columns.Add(new DataColumn("col1", typeof(byte[])));
+			table.Columns.Add(new DataColumn("col2", typeof(byte[])));
 			table.Rows.Add(table.NewRow());
 			table.Rows[0].SetField(table.Columns[0], new byte[3] { 25, 1, 223 });
+			table.Rows[0].SetField<byte[]?>(table.Columns[1], null);
 			table.Rows.Add(table.NewRow());
 			dataset.Tables.Add(table);
 			var result = new DatabaseResult(dataset);
@@ -270,6 +272,8 @@ namespace DatabaseSharp.Tests.Models
 			var row = result[0][0];
 			var expected = new byte[3] { 25, 1, 223 };
 			var actual = row.GetValue(typeof(byte[]), "col1");
+			var actual2 = row.GetValueOrNull(typeof(byte[]), "col2");
+			Assert.IsNull(actual2);
 			Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; i++)
 				Assert.AreEqual(expected[i], actual[i]);

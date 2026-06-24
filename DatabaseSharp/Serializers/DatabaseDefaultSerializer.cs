@@ -26,7 +26,7 @@ namespace DatabaseSharp.Serializers
 					columnName = overrideAttribute.ColumnName;
 				if (overrideAttribute.FillTable != -1)
 				{
-					if (propInfo.PropertyType.GenericTypeArguments.Length > 0 && propInfo.PropertyType != typeof(byte[]))
+					if (propInfo.PropertyType.GenericTypeArguments.Length > 0 && propInfo.PropertyType != typeof(byte[]) && underlying != typeof(byte[]))
 					{
 						var argProp = propInfo.PropertyType.GenericTypeArguments[0];
 						var argUnderlying = Nullable.GetUnderlyingType(argProp);
@@ -62,6 +62,8 @@ namespace DatabaseSharp.Serializers
 					}
 				}
 			}
+			if (propInfo.PropertyType == typeof(byte[]) || underlying == typeof(byte[]))
+				return row.GetValueOrNull(propInfo.PropertyType, columnName);
 			if (underlying != null)
 				return row.GetValueOrNull(underlying, columnName);
 			else

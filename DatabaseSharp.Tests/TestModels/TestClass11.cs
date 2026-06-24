@@ -5,5 +5,6 @@
 		public int Count { get; set; }
 		public int Status { get; set; }
 		public byte[] BigData { get; set; }
+		public byte[]? BigData2 { get; set; }
 	}
 }
