@@ -35,6 +35,7 @@ namespace DatabaseSharp
 				{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() },
 				{ DatabaseStrBoolSerializer.SerializerName, new DatabaseStrBoolSerializer() },
 				{ DatabaseBase64Serializer.SerializerName, new DatabaseBase64Serializer() },
+				{ DatabaseStrListSerializer.SerializerName, new DatabaseStrListSerializer() },
 				{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
 			};
 		}
