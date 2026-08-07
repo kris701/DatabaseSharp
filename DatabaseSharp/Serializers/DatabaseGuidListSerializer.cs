@@ -9,7 +9,7 @@ namespace DatabaseSharp.Serializers
 	/// <summary>
 	/// This is a serializer that supports converting a concatinated string in the database to a list type in C#
 	/// </summary>
-	public class DatabaseStrGuidSerializer : IDatabaseSerializer
+	public class DatabaseGuidListSerializer : IDatabaseSerializer
 	{
 		/// <summary>
 		/// Name of the Guid list serializer

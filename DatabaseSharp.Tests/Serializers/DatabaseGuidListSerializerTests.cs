@@ -13,16 +13,16 @@ namespace DatabaseSharp.Tests.Serializers
 	{
 		public class InputObject
 		{
-			[DatabaseSharp(Serializer = DatabaseStrGuidSerializer.SerializerName)]
+			[DatabaseSharp(Serializer = DatabaseGuidListSerializer.SerializerName)]
 			public List<Guid> Col1 { get; set; } = new List<Guid>();
-			[DatabaseSharp(Serializer = DatabaseStrGuidSerializer.SerializerName)]
+			[DatabaseSharp(Serializer = DatabaseGuidListSerializer.SerializerName)]
 			public List<Guid>? Col2 { get; set; } = null;
 		}
 
 		public class InputObject2
 		{
 			public string Other { get; set; }
-			[DatabaseSharp(Serializer = DatabaseStrGuidSerializer.SerializerName)]
+			[DatabaseSharp(Serializer = DatabaseGuidListSerializer.SerializerName)]
 			public List<Guid> Col1 { get; set; } = new List<Guid>();
 		}
 
@@ -32,7 +32,7 @@ namespace DatabaseSharp.Tests.Serializers
 			// ARRANGE
 			var serializers = new Dictionary<string, IDatabaseSerializer>()
 			{
-				{ DatabaseStrGuidSerializer.SerializerName, new DatabaseStrGuidSerializer() }
+				{ DatabaseGuidListSerializer.SerializerName, new DatabaseGuidListSerializer() }
 			};
 			var input = new InputObject()
 			{
@@ -63,7 +63,7 @@ namespace DatabaseSharp.Tests.Serializers
 			var serializers = new Dictionary<string, IDatabaseSerializer>()
 			{
 				{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
-				{ DatabaseStrGuidSerializer.SerializerName, new DatabaseStrGuidSerializer() }
+				{ DatabaseGuidListSerializer.SerializerName, new DatabaseGuidListSerializer() }
 			};
 			var input = new InputObject2()
 			{
@@ -92,7 +92,7 @@ namespace DatabaseSharp.Tests.Serializers
 			// ARRANGE
 			var serializers = new Dictionary<string, IDatabaseSerializer>()
 			{
-				{ DatabaseStrGuidSerializer.SerializerName, new DatabaseStrGuidSerializer() }
+				{ DatabaseGuidListSerializer.SerializerName, new DatabaseGuidListSerializer() }
 			};
 
 			var input = new InputObject()
