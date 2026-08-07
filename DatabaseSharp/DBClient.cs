@@ -36,6 +36,7 @@ namespace DatabaseSharp
 				{ DatabaseStrBoolSerializer.SerializerName, new DatabaseStrBoolSerializer() },
 				{ DatabaseBase64Serializer.SerializerName, new DatabaseBase64Serializer() },
 				{ DatabaseStrListSerializer.SerializerName, new DatabaseStrListSerializer() },
+				{ DatabaseGuidListSerializer.SerializerName, new DatabaseGuidListSerializer() },
 				{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
 			};
 		}
