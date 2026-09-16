@@ -3,6 +3,8 @@ using System.Reflection;
 
 namespace DatabaseSharp.Tools
 {
+	public delegate EventHandler OnCRUDEvent(object? i, object? o);
+
 	/// <summary>
 	/// Base implementation model for an entire CRUD interface to the database
 	/// </summary>
@@ -34,17 +36,11 @@ namespace DatabaseSharp.Tools
 		where TDelete : class, new()
 		where TEmpty : class, new()
 	{
-		public delegate EventHandler OnAddEventHandler(TAdd i, TModel o);
-		public delegate EventHandler OnUpdateEventHandler(TModel i, TModel o);
-		public delegate EventHandler OnGetEventHandler(TGetModel i, TModel o);
-		public delegate EventHandler OnGetAllEventHandler(TGetAllModel i, List<TListModel> o);
-		public delegate EventHandler OnDeleteEventHandler(TDelete i, TEmpty o);
-
-		public event OnAddEventHandler? OnAdd;
-		public event OnUpdateEventHandler? OnUpdate;
-		public event OnGetEventHandler? OnGet;
-		public event OnGetAllEventHandler? OnGetAll;
-		public event OnDeleteEventHandler? OnDelete;
+		public event OnCRUDEvent? OnAdd;
+		public event OnCRUDEvent? OnUpdate;
+		public event OnCRUDEvent? OnGet;
+		public event OnCRUDEvent? OnGetAll;
+		public event OnCRUDEvent? OnDelete;
 
 		/// <summary>
 		/// Database client interface in use
