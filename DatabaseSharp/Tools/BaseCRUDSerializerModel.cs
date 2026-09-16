@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace DatabaseSharp.Tools
 {
-	public delegate EventHandler OnCRUDEvent(object? i, object? o);
+	public delegate void OnCRUDEvent(object? i, object? o);
 
 	/// <summary>
 	/// Base implementation model for an entire CRUD interface to the database
