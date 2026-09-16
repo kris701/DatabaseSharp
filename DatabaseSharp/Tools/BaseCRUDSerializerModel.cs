@@ -34,6 +34,18 @@ namespace DatabaseSharp.Tools
 		where TDelete : class, new()
 		where TEmpty : class, new()
 	{
+		public delegate EventHandler OnAddEventHandler(TAdd i, TModel o);
+		public delegate EventHandler OnUpdateEventHandler(TModel i, TModel o);
+		public delegate EventHandler OnGetEventHandler(TGetModel i, TModel o);
+		public delegate EventHandler OnGetAllEventHandler(TGetAllModel i, List<TListModel> o);
+		public delegate EventHandler OnDeleteEventHandler(TDelete i, TEmpty o);
+
+		public event OnAddEventHandler? OnAdd;
+		public event OnUpdateEventHandler? OnUpdate;
+		public event OnGetEventHandler? OnGet;
+		public event OnGetAllEventHandler? OnGetAll;
+		public event OnDeleteEventHandler? OnDelete;
+
 		/// <summary>
 		/// Database client interface in use
 		/// </summary>
@@ -78,7 +90,12 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public async Task<TModel> AddAsync(TAdd input) => await ExecuteSingleAsync(input, TargetAddSTP, AddPreExecute, AddPostExecute, AddFillOverride);
+		public async Task<TModel> AddAsync(TAdd input)
+		{
+			var result = await ExecuteSingleAsync(input, TargetAddSTP, AddPreExecute, AddPostExecute, AddFillOverride);
+			OnAdd?.Invoke(input, result);
+			return result;
+		}
 
 		/// <summary>
 		/// Additional action to run before communicating with the database
@@ -98,7 +115,12 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public async Task<TModel> UpdateAsync(TModel input) => await ExecuteSingleAsync(input, TargetUpdateSTP, UpdatePreExecute, UpdatePostExecute, UpdateFillOverride);
+		public async Task<TModel> UpdateAsync(TModel input)
+		{
+			var result = await ExecuteSingleAsync(input, TargetUpdateSTP, UpdatePreExecute, UpdatePostExecute, UpdateFillOverride);
+			OnUpdate?.Invoke(input, result);
+			return result;
+		}
 
 		/// <summary>
 		/// Additional action to run before communicating with the database
@@ -118,7 +140,12 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public async Task<TModel> GetAsync(TGetModel input) => await ExecuteSingleAsync(input, TargetGetSTP, GetPreExecute, GetPostExecute, GetFillOverride);
+		public async Task<TModel> GetAsync(TGetModel input)
+		{
+			var result = await ExecuteSingleAsync(input, TargetGetSTP, GetPreExecute, GetPostExecute, GetFillOverride);
+			OnGet?.Invoke(input, result);
+			return result;
+		}
 
 		/// <summary>
 		/// Additional action to run before communicating with the database
@@ -138,7 +165,12 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public async Task<List<TListModel>> GetAllAsync(TGetAllModel input) => await ExecuteListAsync(input, TargetGetAllSTP, GetAllPreExecute, GetAllPostExecute, GetAllFillOverride);
+		public async Task<List<TListModel>> GetAllAsync(TGetAllModel input)
+		{
+			var result = await ExecuteListAsync(input, TargetGetAllSTP, GetAllPreExecute, GetAllPostExecute, GetAllFillOverride);
+			OnGetAll?.Invoke(input, result);
+			return result;
+		}
 
 		/// <summary>
 		/// Additional action to run before communicating with the database
@@ -153,7 +185,12 @@ namespace DatabaseSharp.Tools
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public async Task<TEmpty> DeleteAsync(TDelete input) => await ExecuteSingleAsync(input, TargetDeleteSTP, DeletePreExecute, DeletePostExecute);
+		public async Task<TEmpty> DeleteAsync(TDelete input)
+		{
+			var result = await ExecuteSingleAsync(input, TargetDeleteSTP, DeletePreExecute, DeletePostExecute);
+			OnDelete?.Invoke(input, result);
+			return result;
+		}
 
 		private async Task<TOut> ExecuteSingleAsync<TIn, TOut>(
 			TIn input,
