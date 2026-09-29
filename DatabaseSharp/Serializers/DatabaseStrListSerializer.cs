@@ -27,9 +27,7 @@ namespace DatabaseSharp.Serializers
 				if (overrideAttribute.ColumnName != null)
 					columnName = overrideAttribute.ColumnName;
 			}
-			var value = row.GetValue<string>(columnName);
-			if (value == null || value == "")
-				return null;
+			var value = row.GetValueOrNull(typeof(string), columnName);
 			var item = ReturnAsStringOrNull(value);
 			return item;
 		}

@@ -125,5 +125,42 @@ namespace DatabaseSharp.Tests.Serializers
 			Assert.AreEqual(input1, string.Join(';', model.Col1));
 			Assert.AreEqual(null, model.Col2);
 		}
+
+		[TestMethod]
+		public void Can_Deserialize2()
+		{
+			// ARRANGE
+			var serializers = new Dictionary<string, IDatabaseSerializer>()
+			{
+				{ DatabaseGuidListSerializer.SerializerName, new DatabaseGuidListSerializer() }
+			};
+
+			var input = new InputObject()
+			{
+				Col1 = new List<Guid>()
+				{
+				},
+				Col2 = null
+			};
+			var input1 = string.Join(';', input.Col1);
+
+			var dataset = new DataSet();
+			var table = new DataTable();
+			table.Columns.Add(new DataColumn("Col1", typeof(string)));
+			table.Columns.Add(new DataColumn("Col2", typeof(string)));
+			table.Rows.Add(table.NewRow());
+			table.Rows[0].SetField<string>(table.Columns[0], input1);
+			table.Rows[0].SetField<string?>(table.Columns[1], null);
+			dataset.Tables.Add(table);
+			var result = new DatabaseResult(dataset, serializers);
+
+			// ACT
+			var row = result[0][0];
+			var model = row.Fill<InputObject>();
+
+			// ASSERT
+			Assert.AreEqual(input1, string.Join(';', model.Col1));
+			Assert.AreEqual(null, model.Col2);
+		}
 	}
 }

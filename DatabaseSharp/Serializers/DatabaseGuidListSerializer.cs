@@ -27,9 +27,7 @@ namespace DatabaseSharp.Serializers
 				if (overrideAttribute.ColumnName != null)
 					columnName = overrideAttribute.ColumnName;
 			}
-			var value = row.GetValue<string>(columnName);
-			if (value == null || value == "")
-				return null;
+			var value = row.GetValueOrNull(typeof(string), columnName);
 			var item = ReturnAsStringOrNull(value);
 			return item;
 		}
@@ -43,7 +41,8 @@ namespace DatabaseSharp.Serializers
 				var list = new List<Guid>();
 				var split = sValue.Split(Seperator).ToList();
 				foreach (var item in split)
-					list.Add(new Guid(item));
+					if (item != "")
+						list.Add(new Guid(item));
 				return list;
 			}
 			return new List<Guid>();
