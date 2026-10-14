@@ -1,16 +1,16 @@
 ﻿using DatabaseSharp.Helpers;
 using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
-using Microsoft.Data.SqlClient;
+using Npgsql;
 using System.Data;
 using System.Globalization;
 
 namespace DatabaseSharp
 {
 	/// <summary>
-	/// A client to execute STPs from
+	/// A client to execute STPs on a Postgres SQL server
 	/// </summary>
-	public class DBClient : IDBClient
+	public class PostgresSQLClient : IDBClient
 	{
 		/// <summary>
 		/// Connection string to the database
@@ -26,7 +26,7 @@ namespace DatabaseSharp
 		/// Main constructor
 		/// </summary>
 		/// <param name="connectionString"></param>
-		public DBClient(string connectionString)
+		public PostgresSQLClient(string connectionString)
 		{
 			ConnectionString = connectionString;
 			Serializers = new Dictionary<string, IDatabaseSerializer>()
@@ -51,9 +51,9 @@ namespace DatabaseSharp
 		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null, CancellationToken? token = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
-			using (var sqlConn = new SqlConnection(ConnectionString))
+			using (var sqlConn = new NpgsqlConnection(ConnectionString))
 			{
-				using (var sqlCmd = new SqlCommand(procedureName, sqlConn))
+				using (var sqlCmd = new NpgsqlCommand(procedureName, sqlConn))
 				{
 					sqlCmd.CommandTimeout = sqlConn.ConnectionTimeout;
 					sqlCmd.CommandType = CommandType.StoredProcedure;
@@ -67,7 +67,7 @@ namespace DatabaseSharp
 								var p = (SQLParam)s;
 								var added = sqlCmd.Parameters.AddWithValue(s.Name, p.Value);
 								if (p.Value is byte[])
-									added.SqlDbType = SqlDbType.VarBinary;
+									added.DbType = DbType.Binary;
 							}
 							else if (type.IsAssignableTo(typeof(IListHandler)))
 							{
@@ -76,7 +76,7 @@ namespace DatabaseSharp
 								if (values.Rows.Count > 0)
 								{
 									var added = sqlCmd.Parameters.AddWithValue(s.Name, values);
-									added.SqlDbType = SqlDbType.Structured;
+									added.DbType = DbType.Object;
 								}
 								else
 									sqlCmd.Parameters.AddWithValue(s.Name, null);
@@ -91,7 +91,7 @@ namespace DatabaseSharp
 						await sqlConn.OpenAsync(token.Value);
 						if (token.Value.IsCancellationRequested)
 							return new DatabaseResult(new DataSet());
-						using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+						using (var sqlAdapter = new NpgsqlDataAdapter(sqlCmd))
 						{
 							await Task.Run(() => sqlAdapter.Fill(dt), token.Value);
 						}
@@ -101,7 +101,7 @@ namespace DatabaseSharp
 					else
 					{
 						await sqlConn.OpenAsync();
-						using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+						using (var sqlAdapter = new NpgsqlDataAdapter(sqlCmd))
 						{
 							await Task.Run(() => sqlAdapter.Fill(dt));
 						}
@@ -129,9 +129,9 @@ namespace DatabaseSharp
 		public async Task<DatabaseResult> ExecuteFreeAsync(string freeSql, CancellationToken? token = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
-			using (var sqlConn = new SqlConnection(ConnectionString))
+			using (var sqlConn = new NpgsqlConnection(ConnectionString))
 			{
-				using (var sqlCmd = new SqlCommand(freeSql, sqlConn))
+				using (var sqlCmd = new NpgsqlCommand(freeSql, sqlConn))
 				{
 					sqlCmd.CommandTimeout = sqlConn.ConnectionTimeout;
 					sqlCmd.CommandType = CommandType.Text;
@@ -143,7 +143,7 @@ namespace DatabaseSharp
 					}
 					else
 						await sqlConn.OpenAsync();
-					using (var sqlAdapter = new SqlDataAdapter(sqlCmd))
+					using (var sqlAdapter = new NpgsqlDataAdapter(sqlCmd))
 					{
 						await Task.Run(() => sqlAdapter.Fill(dt));
 					}

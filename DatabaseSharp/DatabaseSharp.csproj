@@ -15,7 +15,7 @@
 
 	<PropertyGroup>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-		<Version>1.6.20</Version>
+		<Version>1.7.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -42,6 +42,8 @@
 	
   <ItemGroup>
 	  <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+	  <PackageReference Include="MySqlConnector" Version="2.6.2" />
+	  <PackageReference Include="Npgsql" Version="10.0.3" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 ﻿using DatabaseSharp.Models;
-using System.Reflection;
 
 namespace DatabaseSharp.Tools
 {
@@ -256,7 +255,7 @@ namespace DatabaseSharp.Tools
 			{
 				if (postExecute != null)
 					return await postExecute(input, new());
-				return new(); 
+				return new();
 			}
 			if (result[0].Count == 0)
 			{

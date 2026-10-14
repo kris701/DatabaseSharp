@@ -2,7 +2,6 @@
 using DatabaseSharp.Models;
 using System.Collections;
 using System.Reflection;
-using System.Text.Json;
 
 namespace DatabaseSharp.Serializers
 {
@@ -63,7 +62,7 @@ namespace DatabaseSharp.Serializers
 			if (value is IList lst)
 			{
 				var asStr = "";
-				foreach(var lstItem in lst)
+				foreach (var lstItem in lst)
 					asStr += lstItem.ToString() + Seperator;
 				if (asStr.Length > 0)
 					asStr = asStr.Substring(0, asStr.Length - 1);

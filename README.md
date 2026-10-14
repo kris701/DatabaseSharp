@@ -20,7 +20,7 @@ The library here is designed to only communicate through STPs, since it is consi
 
 An example of how this works can be seen below:
 ```csharp
-var client = new DBClient("<--Database Connection String Here-->");
+var client = new SQLServerClient("<--Database Connection String Here-->");
 var dataset = await client.ExecuteAsync("some-stp");
 var table = dataset[0];
 var row = table[0];
@@ -38,7 +38,7 @@ public class SomeClass
     public int Value { get; set; }
 }
 
-var client = new DBClient("<--Database Connection String Here-->");
+var client = new SQLServerClient("<--Database Connection String Here-->");
 var dataset = await client.ExecuteAsync("some-stp");
 var table = dataset[0];
 var row = table[0];
@@ -49,11 +49,13 @@ SomeClass filled = row.Fill<SomeClass>();
 These are just the methods on the row level. 
 However you can also use these on the Table level, where it will instead make a list of the items, as such:
 ```csharp
-var client = new DBClient("<--Database Connection String Here-->");
+var client = new SQLServerClient("<--Database Connection String Here-->");
 var dataset = await client.ExecuteAsync("some-stp");
 var table = dataset[0];
 
 List<int> someValue = table.GetAllValues<int>("COL_NAME");
 ```
+
+There are currently implementations to use this SQL Server, PostgresSQL and MySQL databases.
 
 The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).
