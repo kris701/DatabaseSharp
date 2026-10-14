@@ -27,16 +27,13 @@ jobs:
         with:
           user: kris701
 
-      - name: Set folder
-        run: cd DatabaseSharp
-
       - name: Build and Release [DatabaseSharp]
         run: |  
           cd DatabaseSharp
           dotnet build --configuration Release
           dotnet pack --configuration Release
-          dotnet nuget push "DatabaseSharp/bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
-          dotnet nuget push "DatabaseSharp/bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
           cd ..
 
       - name: Build and Release [DatabaseSharp.SQLServer]
@@ -44,8 +41,8 @@ jobs:
           cd DatabaseSharp.SQLServer
           dotnet build --configuration Release
           dotnet pack --configuration Release
-          dotnet nuget push "DatabaseSharp.SQLServer/bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
-          dotnet nuget push "DatabaseSharp.SQLServer/bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
           cd ..
 
       - name: Build and Release [DatabaseSharp.PostgreSQL]
@@ -53,8 +50,8 @@ jobs:
           cd DatabaseSharp.PostgreSQL
           dotnet build --configuration Release
           dotnet pack --configuration Release
-          dotnet nuget push "DatabaseSharp.PostgreSQL/bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
-          dotnet nuget push "DatabaseSharp.PostgreSQL/bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
           cd ..
 
       - name: Build and Release [DatabaseSharp.MySQL]
@@ -62,6 +59,6 @@ jobs:
           cd DatabaseSharp.MySQL
           dotnet build --configuration Release
           dotnet pack --configuration Release
-          dotnet nuget push "DatabaseSharp.MySQL/bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
-          dotnet nuget push "DatabaseSharp.MySQL/bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://nuget.pkg.github.com/kris701/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+          dotnet nuget push "bin/Release/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key ${{ steps.login_nuget.outputs.NUGET_API_KEY }} --skip-duplicate
           cd ..
