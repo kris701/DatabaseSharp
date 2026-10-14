@@ -27,6 +27,9 @@ jobs:
         with:
           user: kris701
 
+      - name: Set folder
+        run: cd DatabaseSharp
+
       - name: Build and Release [DatabaseSharp]
         run: |  
           cd DatabaseSharp
