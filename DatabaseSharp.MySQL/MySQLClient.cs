@@ -5,7 +5,7 @@ using MySqlConnector;
 using System.Data;
 using System.Globalization;
 
-namespace DatabaseSharp
+namespace DatabaseSharp.MySQL
 {
 	/// <summary>
 	/// A client to execute STPs on a MySQL server

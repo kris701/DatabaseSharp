@@ -56,6 +56,9 @@ var table = dataset[0];
 List<int> someValue = table.GetAllValues<int>("COL_NAME");
 ```
 
-There are currently implementations to use this SQL Server, PostgresSQL and MySQL databases.
+There are currently implementations to use this SQL Server, PostgreSQL and MySQL databases:
+* SQL Server: [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.SQLServer/)
+* PostgreSQL: [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.PostgreSQL/)
+* MySQL: [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.MySQL/)
 
 The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).

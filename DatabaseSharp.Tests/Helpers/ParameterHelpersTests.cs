@@ -2,7 +2,6 @@
 using DatabaseSharp.Models;
 using DatabaseSharp.Serializers;
 using DatabaseSharp.Tests.TestModels;
-using Microsoft.IdentityModel.Tokens;
 using System.Data.SqlTypes;
 
 namespace DatabaseSharp.Tests.Helpers
@@ -101,7 +100,7 @@ namespace DatabaseSharp.Tests.Helpers
 					BigData = [1,5]
 				}
 			};
-			
+
 			var serializer = new Dictionary<string, IDatabaseSerializer>() {
 					{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() }
 				};
