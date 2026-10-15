@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{527043EA-9B33-4A79-B649-5A3E3DA9BD50}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		docker-compose.yaml = docker-compose.yaml
 		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
@@ -20,6 +21,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSharp.PostgreSQL", "DatabaseSharp.PostgreSQL\DatabaseSharp.PostgreSQL.csproj", "{5B53A9C3-D852-4C5F-A5DC-3ADFDF39C24E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSharp.MySQL", "DatabaseSharp.MySQL\DatabaseSharp.MySQL.csproj", "{183BCDEA-1A39-488A-9D1E-C588C3ABB75E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSharp.PostgreSQL.Tests", "DatabaseSharp.PostgreSQL.Tests\DatabaseSharp.PostgreSQL.Tests.csproj", "{D68F18A4-E50A-4E04-9B5C-2499C272D1CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseSharp.SQLServer.Tests", "DatabaseSharp.SQLServer.Tests\DatabaseSharp.SQLServer.Tests.csproj", "{6B23285E-9780-4469-BD4C-5E93C200517E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +52,14 @@ Global
 		{183BCDEA-1A39-488A-9D1E-C588C3ABB75E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{183BCDEA-1A39-488A-9D1E-C588C3ABB75E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{183BCDEA-1A39-488A-9D1E-C588C3ABB75E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68F18A4-E50A-4E04-9B5C-2499C272D1CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68F18A4-E50A-4E04-9B5C-2499C272D1CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68F18A4-E50A-4E04-9B5C-2499C272D1CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68F18A4-E50A-4E04-9B5C-2499C272D1CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B23285E-9780-4469-BD4C-5E93C200517E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B23285E-9780-4469-BD4C-5E93C200517E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B23285E-9780-4469-BD4C-5E93C200517E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B23285E-9780-4469-BD4C-5E93C200517E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

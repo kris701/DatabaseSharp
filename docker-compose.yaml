@@ -1,0 +1,17 @@
+name: databasesharp
+services:
+    sql-server:
+        cap_add:
+            - SYS_PTRACE
+        environment:
+            - ACCEPT_EULA=1
+            - MSSQL_SA_PASSWORD=yourStrong(!)Password
+        ports:
+            - 36790:1433
+        image: mcr.microsoft.com/mssql/server:2025-latest
+    postgresql-server:
+        environment:
+            - POSTGRES_PASSWORD=yourStrong(!)Password
+        ports:
+            - 54211:5432
+        image: postgres
