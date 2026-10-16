@@ -56,9 +56,44 @@ var table = dataset[0];
 List<int> someValue = table.GetAllValues<int>("COL_NAME");
 ```
 
-There are currently implementations to use this SQL Server, PostgreSQL and MySQL databases:
-* SQL Server: [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.SQLServer/)
-* PostgreSQL: [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.PostgreSQL/)
-* MySQL: [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.MySQL/)
-
 The project is available as a package on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp/).
+
+## Connectors
+There are different ADO.NET connectors for different SQL servers.
+Some of the adaptors does not have the same capabilities of others.
+
+### SQL Server
+You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.SQLServer/).
+
+![Static Badge](https://img.shields.io/badge/Single_Arguments-Yes-green)
+![Static Badge](https://img.shields.io/badge/List_Arguments-Yes-green)
+![Static Badge](https://img.shields.io/badge/Structured_Arguments-Yes-green)
+
+![Static Badge](https://img.shields.io/badge/Single_Result-Yes-green)
+![Static Badge](https://img.shields.io/badge/Multi_Table_Result-Yes-green)
+
+### PostgreSQL Server
+You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.PostgreSQL/).
+
+![Static Badge](https://img.shields.io/badge/Single_Arguments-Yes-green)
+![Static Badge](https://img.shields.io/badge/List_Arguments-No-red)
+![Static Badge](https://img.shields.io/badge/Structured_Arguments-No-red)
+
+![Static Badge](https://img.shields.io/badge/Single_Result-Yes-green)
+![Static Badge](https://img.shields.io/badge/Multi_Table_Result-No-red)
+
+> [!INFO]
+> Use `FUNCTIONS` and not `PROCEDURES` with this connector!
+
+> [!WARNING]
+> PostgreSQL is very limited in its ADO.NET connector.
+
+### MySQL Server
+You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.MySQL/).
+
+![Static Badge](https://img.shields.io/badge/Single_Arguments-Yes-green)
+![Static Badge](https://img.shields.io/badge/List_Arguments-Unknown-white)
+![Static Badge](https://img.shields.io/badge/Structured_Arguments-Unknown-white)
+
+![Static Badge](https://img.shields.io/badge/Single_Result-Yes-green)
+![Static Badge](https://img.shields.io/badge/Multi_Table_Result-Yes-green)

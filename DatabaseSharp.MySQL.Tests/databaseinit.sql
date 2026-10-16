@@ -1,0 +1,40 @@
+DROP PROCEDURE IF EXISTS NoArguments_SingleValue;
+GO
+DROP PROCEDURE IF EXISTS NoArguments_MultiValues;
+GO
+DROP PROCEDURE IF EXISTS Arguments_SingleValue;
+GO
+DROP PROCEDURE IF EXISTS Arguments_MultiValues;
+GO
+
+CREATE PROCEDURE NoArguments_SingleValue()
+BEGIN
+	SELECT 1 AS SingleValue;
+END;
+GO
+
+CREATE PROCEDURE NoArguments_MultiValues()
+BEGIN
+	SELECT 1 AS SingleValue
+	UNION ALL
+	SELECT 2 AS SingleValue
+	UNION ALL
+	SELECT 3 AS SingleValue;
+END;
+GO
+
+CREATE PROCEDURE Arguments_SingleValue(ARGVALUE INT)
+BEGIN
+	SELECT ARGVALUE AS SingleValue;
+END;
+GO
+
+CREATE PROCEDURE Arguments_MultiValues(ARGVALUE INT)
+BEGIN
+	SELECT ARGVALUE AS SingleValue
+	UNION ALL
+	SELECT ARGVALUE + 1 AS SingleValue
+	UNION ALL
+	SELECT ARGVALUE + 2 AS SingleValue;
+END;
+GO

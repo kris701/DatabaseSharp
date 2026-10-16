@@ -1,8 +1,5 @@
 ﻿using DatabaseSharp.Models;
 using DatabaseSharp.SQLServer.Tests.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DatabaseSharp.SQLServer.Tests
 {
@@ -17,7 +14,7 @@ namespace DatabaseSharp.SQLServer.Tests
 			var client = new SQLServerClient(ConnectionString);
 			var initializerText = File.ReadAllText("databaseinit.sql");
 			var split = initializerText.Split("GO");
-			foreach(var query in split)
+			foreach (var query in split)
 				if (query.Trim() != "")
 					await client.ExecuteFreeAsync(query.Trim());
 		}

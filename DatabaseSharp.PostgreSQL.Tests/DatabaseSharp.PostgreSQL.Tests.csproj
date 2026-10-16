@@ -12,7 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DatabaseSharp.PostgreSQL\DatabaseSharp.PostgreSQL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="databaseinit.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

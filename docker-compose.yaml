@@ -11,7 +11,16 @@ services:
         image: mcr.microsoft.com/mssql/server:2025-latest
     postgresql-server:
         environment:
-            - POSTGRES_PASSWORD=yourStrong(!)Password
+            - POSTGRES_PASSWORD=superstrongpassword
         ports:
             - 54211:5432
         image: postgres
+    mysql-server:
+        environment:
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=superstrongpassword
+            - MYSQL_ROOT_PASSWORD=superstrongpassword
+            - MYSQL_DATABASE=mysql
+        ports:
+            - 62532:3306
+        image: mysql/mysql-server:latest

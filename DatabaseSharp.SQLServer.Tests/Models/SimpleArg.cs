@@ -1,7 +1,4 @@
 ﻿using DatabaseSharp.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DatabaseSharp.SQLServer.Tests.Models
 {

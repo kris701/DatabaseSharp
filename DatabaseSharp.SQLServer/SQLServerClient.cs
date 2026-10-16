@@ -1,6 +1,4 @@
-﻿using DatabaseSharp.Helpers;
-using DatabaseSharp.Models;
-using DatabaseSharp.Serializers;
+﻿using DatabaseSharp.Models;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Globalization;
@@ -10,35 +8,14 @@ namespace DatabaseSharp.SQLServer
 	/// <summary>
 	/// A client to execute STPs on a SQL Server database
 	/// </summary>
-	public class SQLServerClient : IDBClient
+	public class SQLServerClient : BaseDBClient
 	{
-		/// <summary>
-		/// Connection string to the database
-		/// </summary>
-		public string ConnectionString { get; set; }
-
-		/// <summary>
-		/// Set of optional property serializers
-		/// </summary>
-		public Dictionary<string, IDatabaseSerializer> Serializers { get; }
-
 		/// <summary>
 		/// Main constructor
 		/// </summary>
 		/// <param name="connectionString"></param>
-		public SQLServerClient(string connectionString)
+		public SQLServerClient(string connectionString) : base(connectionString)
 		{
-			ConnectionString = connectionString;
-			Serializers = new Dictionary<string, IDatabaseSerializer>()
-			{
-				{ DatabaseJsonSerializer.SerializerName, new DatabaseJsonSerializer() },
-				{ DatabaseEnumSerializer.SerializerName, new DatabaseEnumSerializer() },
-				{ DatabaseStrBoolSerializer.SerializerName, new DatabaseStrBoolSerializer() },
-				{ DatabaseBase64Serializer.SerializerName, new DatabaseBase64Serializer() },
-				{ DatabaseStrListSerializer.SerializerName, new DatabaseStrListSerializer() },
-				{ DatabaseGuidListSerializer.SerializerName, new DatabaseGuidListSerializer() },
-				{ DatabaseDefaultSerializer.SerializerName, new DatabaseDefaultSerializer() },
-			};
 		}
 
 		/// <summary>
@@ -48,7 +25,7 @@ namespace DatabaseSharp.SQLServer
 		/// <param name="parameters"></param>
 		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null, CancellationToken? token = null)
+		public override async Task<DatabaseResult> ExecuteAsync(string procedureName, List<ISQLParameter>? parameters = null, CancellationToken? token = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
 			using (var sqlConn = new SqlConnection(ConnectionString))
@@ -112,21 +89,12 @@ namespace DatabaseSharp.SQLServer
 		}
 
 		/// <summary>
-		/// Execute a STP with a object that will be turned into parameters
-		/// </summary>
-		/// <param name="procedureName"></param>
-		/// <param name="item"></param>
-		/// <param name="token"></param>
-		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteAsync(string procedureName, object item, CancellationToken? token = null) => await ExecuteAsync(procedureName, ParameterHelpers.GenerateParametersFromObject(item, Serializers), token);
-
-		/// <summary>
 		/// Execute some SQL query.
 		/// </summary>
 		/// <param name="freeSql"></param>
 		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task<DatabaseResult> ExecuteFreeAsync(string freeSql, CancellationToken? token = null)
+		public override async Task<DatabaseResult> ExecuteFreeAsync(string freeSql, CancellationToken? token = null)
 		{
 			DataSet dt = new DataSet() { Locale = CultureInfo.InvariantCulture };
 			using (var sqlConn = new SqlConnection(ConnectionString))
