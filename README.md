@@ -63,6 +63,9 @@ There are different ADO.NET connectors for different SQL servers.
 Some of the adaptors does not have the same capabilities of others.
 
 ### SQL Server
+![Nuget](https://img.shields.io/nuget/v/DatabaseSharp.SQLServer)
+![Nuget](https://img.shields.io/nuget/dt/DatabaseSharp.SQLServer)
+
 You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.SQLServer/).
 
 ![Static Badge](https://img.shields.io/badge/Single_Arguments-Yes-green)
@@ -73,6 +76,9 @@ You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/Da
 ![Static Badge](https://img.shields.io/badge/Multi_Table_Result-Yes-green)
 
 ### PostgreSQL Server
+![Nuget](https://img.shields.io/nuget/v/DatabaseSharp.PostgreSQL)
+![Nuget](https://img.shields.io/nuget/dt/DatabaseSharp.PostgreSQL)
+
 You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.PostgreSQL/).
 
 ![Static Badge](https://img.shields.io/badge/Single_Arguments-Yes-green)
@@ -89,6 +95,9 @@ You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/Da
 > PostgreSQL is very limited in its ADO.NET connector.
 
 ### MySQL Server
+![Nuget](https://img.shields.io/nuget/v/DatabaseSharp.MySQL)
+![Nuget](https://img.shields.io/nuget/dt/DatabaseSharp.MySQL)
+
 You can find it on the [NuGet Package Manager](https://www.nuget.org/packages/DatabaseSharp.MySQL/).
 
 ![Static Badge](https://img.shields.io/badge/Single_Arguments-Yes-green)
